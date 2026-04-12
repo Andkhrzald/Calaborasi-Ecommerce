@@ -175,6 +175,7 @@ td {
     border-radius: 8px;
     transition: 0.3s;
     margin-bottom: 5px;
+    
 }
 
 .sidebar nav ul li:hover, .sidebar nav ul li.active {
