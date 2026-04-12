@@ -11,23 +11,19 @@ async function loadProducts() {
   }));
 }
 
+function formatRupiah(number) {
+  return number.toLocaleString('id-ID');
+}
+
 // Load cart from localStorage or redirect if empty
 async function loadCart() {
   await loadProducts();
-
   const savedCart = localStorage.getItem('cart');
-  const customerName = localStorage.getItem('customerName');
-
+  
   if (savedCart) {
     cart = JSON.parse(savedCart);
     total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     renderOrderSummary();
-
-    if (customerName && typeof customerName === 'string' && customerName !== '[object HTMLInputElement]') {
-      document.getElementById('name').value = customerName;
-    } else {
-      localStorage.removeItem('customerName');
-    }
   } else {
     alert('Keranjang kosong. Kembali ke halaman utama.');
     window.location.href = 'index.html';
@@ -36,21 +32,22 @@ async function loadCart() {
 
 function renderOrderSummary() {
   const container = document.getElementById('order-items');
+  if(!container) return;
   container.innerHTML = '';
 
   cart.forEach(item => {
-    const div = document.createElement('div');
-    div.className = 'checkout-item';
-
     const product = allProducts.find(p => p.name === item.name);
     const image = product ? product.image : '';
 
+    const div = document.createElement('div');
+    div.className = 'checkout-item';
+    div.style = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;";
     div.innerHTML = `
       <div style="display: flex; align-items: center; gap: 1rem;">
-        <img src="${image}" alt="${item.name}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+        <img src="${image}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
         <div>
-          <h4 style="margin: 0; font-size: 1rem; color: #212529;">${item.name}</h4>
-          <p style="margin: 0.25rem 0; color: #6c757d; font-size: 0.9rem;">Rp ${formatRupiah(item.price)} x ${item.qty}</p>
+          <h4 style="margin: 0; font-size: 0.9rem;">${item.name}</h4>
+          <p style="margin: 0; color: #666; font-size: 0.8rem;">Rp ${formatRupiah(item.price)} x ${item.qty}</p>
         </div>
       </div>
       <div style="font-weight: 600; color: #007bff;">Rp ${formatRupiah(item.price * item.qty)}</div>
@@ -61,33 +58,34 @@ function renderOrderSummary() {
   document.getElementById('checkout-total').textContent = formatRupiah(total);
 }
 
-function formatRupiah(number) {
-  return number.toLocaleString('id-ID');
-}
-
+// PROSES SUBMIT FORM
 document.getElementById('checkout-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
+  // Data Customer dari Form
   const customerData = {
-    name: document.getElementById('name').value,
+    nama: document.getElementById('name').value,
     email: document.getElementById('email').value,
-    phone: document.getElementById('phone').value,
-    address: document.getElementById('address').value,
-    notes: document.getElementById('notes').value
+    telp: document.getElementById('phone').value,
+    alamat: document.getElementById('address').value,
+    catatan: document.getElementById('notes').value || "-"
   };
 
-  // Simpan pesanan ke antrean admin untuk proses approval
+  // 1. SIMPAN KE ANTREAN ADMIN (AGAR ADMIN BISA LIHAT DETAIL)
   let antrean = JSON.parse(localStorage.getItem("antrean_pesanan")) || [];
-  cart.forEach(item => {
-    antrean.push({
-      tanggal: new Date().toLocaleString(),
-      namaProduk: item.name + " (x" + item.qty + ")",
-      hargaJual: item.price * item.qty
-    });
+  
+  // Gabungkan semua item keranjang jadi satu string untuk Admin
+  const namaProdukGabung = cart.map(item => `${item.name} (x${item.qty})`).join(", ");
+
+  antrean.push({
+    tanggal: new Date().toLocaleString('id-ID'),
+    namaProduk: namaProdukGabung,
+    hargaJual: total,
+    customer: customerData // PENTING: Key ini harus 'customer' agar dibaca Admin
   });
   localStorage.setItem("antrean_pesanan", JSON.stringify(antrean));
 
-  // Simpan riwayat pesanan customer untuk tracking status
+  // 2. SIMPAN KE RIWAYAT CUSTOMER (UNTUK TRACKING STATUS)
   const orderId = `ORD${Date.now()}`;
   const orderHistory = JSON.parse(localStorage.getItem('order_history')) || [];
   orderHistory.push({
@@ -101,9 +99,10 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
   localStorage.setItem('order_history', JSON.stringify(orderHistory));
   localStorage.setItem('last_order_id', orderId);
 
-  alert('✅ Pesanan berhasil!');
+  alert('✅ Pesanan berhasil dikirim!');
   localStorage.removeItem('cart');
   window.location.href = `order-status.html?orderId=${encodeURIComponent(orderId)}`;
 });
 
+// Jalankan fungsi load
 loadCart();
