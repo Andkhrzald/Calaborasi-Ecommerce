@@ -218,13 +218,7 @@ td {
     padding: 0;         /* Padding di li dinolkan agar tidak double */
     border-radius: 8px;
     transition: 0.3s;
-}
-
-/* Kunci kerapihan: Pindahkan padding ke tag 'a' */
-.sidebar nav ul {
-    list-style: none;
-    padding: 0 15px;
-    margin-top: 20px;
+    margin-bottom: 5px;
 }
 
 .sidebar nav ul li {

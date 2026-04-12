@@ -153,16 +153,35 @@ function updateCartUI() {
   }
 }
 
+function getLastOrderId() {
+  const lastOrderId = localStorage.getItem('last_order_id');
+  if (lastOrderId) return lastOrderId;
+
+  const orderHistory = JSON.parse(localStorage.getItem('order_history')) || [];
+  return orderHistory.length ? orderHistory[orderHistory.length - 1].id : null;
+}
+
+function updateOrderStatusLink() {
+  const orderId = getLastOrderId();
+  const link = document.getElementById('status-link');
+  if (!link) return;
+
+  if (orderId) {
+    link.href = `order-status.html?orderId=${encodeURIComponent(orderId)}`;
+    link.style.display = 'inline-block';
+  } else {
+    link.style.display = 'none';
+  }
+}
+
 function checkout() {
-  if (cart.length === 0) return alert("Keranjang kosong!");
+  if (cart.length === 0) return alert("Keranjang kosong!")
 
-  const customer = prompt("Masukkan nama Anda:");
-  if (!customer) return;
-
-  localStorage.setItem('customerName', customer);
+  // Langsung ke halaman checkout customer.
   window.location.href = 'checkout.html';
 }
 
 // INIT
 loadProductsSimple();
 loadCart();
+updateOrderStatusLink();
