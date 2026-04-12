@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Orders Management</title>
+
+<!-- CSS -->
+<link rel="stylesheet" href="../assets/css/styles.css">
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2>🛍 E-Commerce</h2>
+        <ul>
+            <li ><a href="Dashboard.html">Dashboard</a></li>
+            <li ><a href="customers.html">Customer</a></li>
+            <li ><a href="products.html">Products</a></li>
+            <li ><a href="payments.html">Payments</a></li>
+            <li class="active" ><a href="orders.html">Orders</a></li>
+            <li ><a href="chat.html" >Chat</a></li>
+            <li ><a href="mail.html">Mail</a></li>
+            <li ><a href="calendar.html">Calendar</a></li>
+            <li ><a href="settings.html">Settings</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- Topbar -->
+        <div class="topbar">
+            <h3>Orders Management 📦</h3>
+            <input type="text" placeholder="Search orders...">
+            <div class="profile">RF</div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="card table">
+
+            <h3 style="margin-bottom:10px;">All Orders</h3>
+            <p style="color:#777; margin-bottom:15px;">
+                Semua data produk dan stok ditampilkan di sini
+            </p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Customer</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="orderTable"></tbody>
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+<!-- JS -->
+<script src="../assets/js/orders.js"></script>
+
+</body>
+</html>

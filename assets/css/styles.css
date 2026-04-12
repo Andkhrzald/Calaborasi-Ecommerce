@@ -1,0 +1,166 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg,#57573e,#efedf1);
+}
+
+/* Wrapper */
+.wrapper {
+    display: flex;
+    padding: 30px;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+}
+
+.sidebar li {
+    list-style: none;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.sidebar .active {
+    background: #7c3aed;
+    color: white;
+}
+
+/* Main */
+.main {
+    flex: 1;
+    margin-left: 20px;
+}
+
+/* Topbar */
+.topbar {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.topbar input {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: #f1f5f9;
+}
+
+.profile {
+    background: #7c3aed;
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+/* Cards */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+/* Charts */
+.charts {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.big {
+    height: 300px;
+}
+
+.small {
+    height: 300px;
+}
+
+/* Bottom */
+.bottom {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 15px;
+}
+
+/* Table */
+table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+.done {
+    background: #dcfce7;
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+.pending {
+    background: #fef9c3;
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+/* Progress bar */
+.bar {
+    margin-top: 15px;
+}
+
+.bar div {
+    background: #eee;
+    height: 8px;
+    border-radius: 10px;
+}
+
+.bar span {
+    display: block;
+    height: 100%;
+    background: #7c3aed;
+    border-radius: 10px;
+}
+
+.sidebar a {
+    text-decoration: none;   /* hilangin garis bawah */
+    color: black;            /* warna normal */
+    display: block;          /* biar full klik area */
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.sidebar a:hover {
+    background: #f1f5f9;
+}
+
+.sidebar .active a {
+    background: #7c3aed;
+    color: white;
+}

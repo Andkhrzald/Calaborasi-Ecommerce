@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restock Requests</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <aside class="sidebar">
+        <h2>🛍 E-Commerce</h2>
+        <ul>
+            <li onclick="location.href='dashboard.html'">Dashboard</li>
+            <li onclick="location.href='products.html'">Products</li>
+            <li class="active">Restock</li>
+        </ul>
+    </aside>
+
+    <main class="main">
+        <h3>Restock Requests 📦</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Size</th>
+                    <th>Color</th>
+                    <th>Qty</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="restockTable"></tbody>
+        </table>
+    </main>
+
+</div>
+
+<script src="../assets/js/restock.js"></script>
+
+</body>
+</html>

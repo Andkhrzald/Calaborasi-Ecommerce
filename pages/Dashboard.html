@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ecommerce Dashboard</title>
+<link rel="stylesheet" href="../assets/css/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2>🛍 E-Commerce</h2>
+        <ul>
+            <li class="active" ><a href="Dashboard.html">Dashboard</a></li>
+            <li ><a href="customers.html">Customer</a></li>
+            <li ><a href="products.html">Products</a></li>
+            <li ><a href="payments.html">Payments</a></li>
+            <li ><a href="orders.html">Orders</a></li>
+            <li ><a href="chat.html">Chat</a></li>
+            <li ><a href="mail.html">Mail</a></li>
+            <li ><a href="calendar.html">Calendar</a></li>
+            <li ><a href="settings.html">Settings</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- Topbar -->
+        <div class="topbar">
+            <h3>Hello, All Admin 👋</h3>
+            <input type="text" placeholder="Search your products">
+            <div class="profile">RF</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="card">
+                <h4>2000+</h4>
+                <p>Total Customers</p>
+            </div>
+            <div class="card">
+                <h4>140+</h4>
+                <p>Total Products</p>
+            </div>
+            <div class="card">
+                <h4>1600+</h4>
+                <p>Total Orders</p>
+            </div>
+            <div class="card">
+                <h4>2000+</h4>
+                <p>Total Sales</p>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts">
+
+            <div class="card big">
+                <h3>Sales Trend</h3>
+                <canvas id="lineChart"></canvas>
+            </div>
+
+            <div class="card small">
+                <h3>Product Views</h3>
+                <canvas id="barChart"></canvas>
+            </div>
+
+        </div>
+
+        <!-- Bottom Section -->
+        <div class="bottom">
+
+            <!-- Table -->
+            <div class="card table">
+
+                <h3>All Orders</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Customer</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="productTable"></tbody>
+
+                </table>
+            </div>
+
+            <!-- Top Sold -->
+            <div class="card sold">
+                <h3>Top Sold Items</h3>
+
+                <div class="bar">
+                    <p>Jacket</p>
+                    <div><span style="width:90%"></span></div>
+                </div>
+
+                <div class="bar">
+                    <p>Sneakers</p>
+                    <div><span style="width:80%"></span></div>
+                </div>
+
+                <div class="bar">
+                    <p>Cap</p>
+                    <div><span style="width:60%"></span></div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+new Chart(document.getElementById("lineChart"), {
+    type: "line",
+    data: {
+        labels: ["Jan","Mar","May","Jul","Sep","Dec"],
+        datasets: [{
+            data: [10,40,25,50,45,30],
+            borderColor: "#7c3aed",
+            tension: 0.4,
+            fill: true,
+            backgroundColor: "rgba(124,58,237,0.1)"
+        }]
+    },
+    options:{plugins:{legend:{display:false}}}
+});
+
+new Chart(document.getElementById("barChart"), {
+    type: "bar",
+    data: {
+        labels: ["Mon","Tue","Wed","Thu","Fri"],
+        datasets: [{
+            data: [12,19,10,15,22],
+            backgroundColor: "#a78bfa"
+        }]
+    },
+    options:{plugins:{legend:{display:false}}}
+});
+</script>
+
+<script>
+fetch('http://localhost:8080/ecommerce-dashboard/backend/get_orders.php')
+.then(res => res.json())
+.then(data => {
+    let table = document.getElementById('productTable');
+    table.innerHTML = "";
+
+    data.forEach(item => {
+
+        // disable kalau sudah selesai
+        let disabled = (item.status === 'done' || item.status === 'cancel') ? 'disabled' : '';
+
+        table.innerHTML += `
+        <tr>
+            <td>${item.name}</td>
+            <td>${item.customer_name}</td>
+            <td>${item.quantity} pcs</td>
+            <td>Rp ${item.price * item.quantity}</td>
+            <td>
+                <span class="${item.status}">
+                    ${item.status}
+                </span>
+            </td>
+            <td>
+                
+            </td>
+        </tr>
+        `;
+    });
+});
+
+// 🔥 FUNCTION UPDATE STATUS (WAJIB ADA)
+function updateStatus(id, status) {
+    fetch('http://localhost:8080/ecommerce-dashboard/backend/update_order.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `id=${id}&status=${status}`
+    })
+    .then(() => {
+        alert("Status diupdate 🔥");
+        location.reload();
+    });
+}
+</script>
+
+</body>
+</html>
