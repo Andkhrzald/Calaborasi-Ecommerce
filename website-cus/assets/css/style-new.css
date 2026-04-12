@@ -834,3 +834,13 @@ body {
 .cart-items-scroll::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
+
+.summary-item {
+    font-size: 14px;
+    color: #333;
+}
+.checkout-total {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 2px solid #007bff;
+}
