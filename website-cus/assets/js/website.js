@@ -38,40 +38,35 @@ function formatRupiah(number) {
 }
 
 function loadProductsSimple() {
-  allProducts = [
-    { id: 1, name: "Kaos Basic Hitam", price: 45000, category: "clothes", icon: "👕", discount: 20, sold: 342 },
-    { id: 2, name: "Kaos Basic Putih", price: 45000, category: "clothes", icon: "👕", discount: 0, sold: 218 },
-    { id: 3, name: "Kaos Oversized Hijau", price: 65000, category: "clothes", icon: "👕", discount: 15, sold: 156 },
-    { id: 4, name: "Jaket Denim Biru", price: 180000, category: "clothes", icon: "🧥", discount: 25, sold: 89 },
-    { id: 5, name: "Hoodie Cream", price: 130000, category: "clothes", icon: "🧥", discount: 10, sold: 267 },
-    { id: 6, name: "Hoodie Black Premium", price: 150000, category: "clothes", icon: "🧥", discount: 20, sold: 195 },
-    { id: 7, name: "Celana Jeans Slim", price: 120000, category: "clothes", icon: "👖", discount: 15, sold: 412 },
-    { id: 8, name: "Celana Chino Khaki", price: 125000, category: "clothes", icon: "👖", discount: 0, sold: 203 },
-    { id: 9, name: "Shirt Formal Biru", price: 95000, category: "clothes", icon: "👔", discount: 10, sold: 178 },
-    { id: 10, name: "Coat Winter Abu", price: 250000, category: "clothes", icon: "🧥", discount: 30, sold: 45 },
-    { id: 11, name: "Dress Casual Stripe", price: 110000, category: "clothes", icon: "👗", discount: 20, sold: 324 },
-    { id: 12, name: "Dress Elegant Hitam", price: 160000, category: "clothes", icon: "👗", discount: 15, sold: 143 },
-    { id: 13, name: "Crop Top White", price: 55000, category: "clothes", icon: "👕", discount: 10, sold: 289 },
-    { id: 14, name: "Blouse Silk Cream", price: 140000, category: "clothes", icon: "👔", discount: 25, sold: 167 },
-    { id: 15, name: "Skirt Mini Denim", price: 95000, category: "clothes", icon: "👖", discount: 0, sold: 401 },
-    { id: 16, name: "Sneakers White Classic", price: 200000, category: "shoes", icon: "👟", discount: 15, sold: 523 },
-    { id: 17, name: "Sneakers Black Premium", price: 250000, category: "shoes", icon: "👟", discount: 20, sold: 234 },
-    { id: 18, name: "Running Shoes Green", price: 220000, category: "shoes", icon: "👟", discount: 25, sold: 189 },
-    { id: 19, name: "Casual Loafer Brown", price: 180000, category: "shoes", icon: "👞", discount: 10, sold: 142 },
-    { id: 20, name: "Canvas High Top", price: 150000, category: "shoes", icon: "👟", discount: 0, sold: 356 },
-    { id: 21, name: "Heels Elegant Black", price: 210000, category: "shoes", icon: "👠", discount: 30, sold: 178 },
-    { id: 22, name: "Sandal Casual Blue", price: 75000, category: "shoes", icon: "👡", discount: 15, sold: 467 },
-    { id: 23, name: "Topi Snapback Hitam", price: 45000, category: "accessories", icon: "🧢", discount: 20, sold: 298 },
-    { id: 24, name: "Tas Ransel Urban", price: 120000, category: "accessories", icon: "🎒", discount: 15, sold: 212 },
-    { id: 25, name: "Tas Tangan Coklat", price: 180000, category: "accessories", icon: "👜", discount: 25, sold: 134 },
-    { id: 26, name: "Watch Fashion Hitam", price: 150000, category: "accessories", icon: "⌚", discount: 10, sold: 267 },
-    { id: 27, name: "Dompet Kulit Hitam", price: 85000, category: "accessories", icon: "👛", discount: 0, sold: 389 },
-    { id: 28, name: "Kacamata Sunglasses", price: 95000, category: "accessories", icon: "😎", discount: 20, sold: 445 },
-    { id: 29, name: "Scarf Wool Cream", price: 55000, category: "accessories", icon: "🧣", discount: 15, sold: 201 },
-    { id: 30, name: "Belt Leather Premium", price: 65000, category: "accessories", icon: "👕", discount: 10, sold: 523 },
-    { id: 31, name: "🔥 Kaos Bundle 3pcs", price: 99000, category: "sale", icon: "👕", discount: 50, sold: 892 },
-    { id: 32, name: "🔥 Hoodie Overload", price: 110000, category: "sale", icon: "🧥", discount: 45, sold: 567 },
-  ];
+  const produkAdmin = JSON.parse(localStorage.getItem("produk_clothing")) || [];
+  
+  // Map admin products to website format
+  allProducts = produkAdmin.map(p => ({
+    id: p.id,
+    name: p.nama,
+    price: parseInt(p.harga),
+    category: "clothes", // Default category
+    icon: "👕", // Default icon
+    discount: 0, // Default discount
+    sold: 0, // Default sold
+    image: `../assets/img/${p.gambar}`, // Image path
+    stock: p.stok
+  }));
+
+  // Fallback to hardcoded if no admin products
+  if (allProducts.length === 0) {
+    allProducts = [
+      { id: 1, name: "Kaos Basic Hitam", price: 45000, category: "clothes", icon: "👕", discount: 20, sold: 342, image: "", stock: 10 },
+      { id: 2, name: "Kaos Basic Putih", price: 45000, category: "clothes", icon: "👕", discount: 0, sold: 218, image: "", stock: 10 },
+      { id: 3, name: "Kaos Oversized Hijau", price: 65000, category: "clothes", icon: "👕", discount: 15, sold: 156, image: "", stock: 10 },
+      { id: 4, name: "Jaket Denim Biru", price: 180000, category: "clothes", icon: "🧥", discount: 25, sold: 89, image: "", stock: 10 },
+      { id: 5, name: "Hoodie Cream", price: 130000, category: "clothes", icon: "🧥", discount: 10, sold: 267, image: "", stock: 10 },
+      { id: 6, name: "Hoodie Black Premium", price: 150000, category: "clothes", icon: "🧥", discount: 20, sold: 195, image: "", stock: 10 },
+      { id: 7, name: "Celana Jeans Slim", price: 120000, category: "clothes", icon: "👖", discount: 15, sold: 412, image: "", stock: 10 },
+      { id: 8, name: "Celana Chino Khaki", price: 125000, category: "clothes", icon: "👖", discount: 0, sold: 203, image: "", stock: 10 },
+      { id: 9, name: "Shirt Formal Biru", price: 95000, category: "clothes", icon: "👔", discount: 10, sold: 178, image: "", stock: 10 },
+    ];
+  }
 
   renderProductsGrid(allProducts);
 }
@@ -88,17 +83,17 @@ function renderProductsGrid(products) {
     div.className = "product-card";
     div.innerHTML = `
       <div class="product-image">
-        <div class="image-placeholder">${product.icon}</div>
+        ${product.image ? `<img src="${product.image}" alt="${product.name}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/200'">` : `<div class="image-placeholder">${product.icon}</div>`}
         ${discount > 0 ? `<div class="discount-badge">-${discount}%</div>` : ''}
       </div>
       <div class="product-body">
         <h3 class="product-name">${product.name}</h3>
-        <div class="product-rating">⭐ 4.8 • ${product.sold} terjual</div>
+        <div class="product-rating">⭐ 4.8 • ${product.sold} terjual • Stok: ${product.stock || 'N/A'}</div>
         <div class="product-price">
           ${discount > 0 ? `<span class="original-price">Rp ${originalPrice.toLocaleString('id-ID')}</span>` : ''}
           <span class="current-price">Rp ${product.price.toLocaleString('id-ID')}</span>
         </div>
-        <button onclick="addToCart('${product.name}', ${product.price})">+ Keranjang</button>
+        <button onclick="addToCart('${product.name}', ${product.price})" ${product.stock <= 0 ? 'disabled' : ''}>+ Keranjang</button>
       </div>
     `;
     container.appendChild(div);
@@ -106,9 +101,23 @@ function renderProductsGrid(products) {
 }
 
 function addToCart(name, price) {
+  const product = allProducts.find(p => p.name === name);
+  if (!product) {
+    alert('Produk tidak ditemukan!');
+    return;
+  }
+  if (product.stock <= 0) {
+    alert('Stok produk habis!');
+    return;
+  }
+
   const existing = cart.find(item => item.name === name);
 
   if (existing) {
+    if (existing.qty >= product.stock) {
+      alert('Stok tidak mencukupi!');
+      return;
+    }
     existing.qty++;
   } else {
     cart.push({ name, price, qty: 1 });

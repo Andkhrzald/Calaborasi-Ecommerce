@@ -2,14 +2,13 @@ let cart = [];
 let total = 0;
 let allProducts = [];
 
-// Load products for image lookup
+// Load products from localStorage for image lookup
 async function loadProducts() {
-  try {
-    const res = await fetch("http://localhost:3000/api/products");
-    allProducts = await res.json();
-  } catch (error) {
-    console.error('Error loading products:', error);
-  }
+  const produkAdmin = JSON.parse(localStorage.getItem("produk_clothing")) || [];
+  allProducts = produkAdmin.map(p => ({
+    name: p.nama,
+    image: `../assets/img/${p.gambar}`
+  }));
 }
 
 // Load cart from localStorage or redirect if empty
@@ -75,32 +74,20 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
     notes: document.getElementById('notes').value
   };
 
-  try {
-    const response = await fetch('http://localhost:3000/api/orders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        customer_name: customerData.name,
-        customer_email: customerData.email,
-        customer_phone: customerData.phone,
-        customer_address: customerData.address,
-        notes: customerData.notes,
-        total: total,
-        items: cart
-      })
+  // Simpan pesanan ke antrean admin
+  let antrean = JSON.parse(localStorage.getItem("antrean_pesanan")) || [];
+  cart.forEach(item => {
+    antrean.push({
+      tanggal: new Date().toLocaleString(),
+      namaProduk: item.name + " (x" + item.qty + ")",
+      hargaJual: item.price * item.qty
     });
+  });
+  localStorage.setItem("antrean_pesanan", JSON.stringify(antrean));
 
-    if (response.ok) {
-      alert('✅ Pesanan berhasil!');
-      localStorage.removeItem('cart');
-      window.location.href = 'index.html';
-    } else {
-      alert('❌ Terjadi kesalahan.');
-    }
-  } catch (error) {
-    console.error('Error:', error);
-    alert('❌ Terjadi kesalahan koneksi.');
-  }
+  alert('✅ Pesanan berhasil!');
+  localStorage.removeItem('cart');
+  window.location.href = '../../admin/login.html';
 });
 
 loadCart();

@@ -167,11 +167,11 @@ td {
 .sidebar nav ul {
     list-style: none;
     margin-top: 20px;
-}
+    counter-increment: none;
+  }
 
 .sidebar nav ul li {
     padding: 12px;
-    cursor: pointer;
     border-radius: 8px;
     transition: 0.3s;
     margin-bottom: 5px;
@@ -213,3 +213,54 @@ td {
     font-size: 2.5rem;
     font-weight: 800;
 }
+
+     .menu-item {
+        padding: 12px;
+        cursor: pointer;
+        border-radius: 8px;
+        margin-bottom: 5px;
+        color: #ccc;
+        transition: 0.3s;
+      }
+      .menu-item:hover {
+        background: #444;
+        color: white;
+      }
+      .content-page {
+        animation: fadeIn 0.3s;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+      }
+      .btn-approve {
+        background: #10b981;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .btn-reject {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+      }

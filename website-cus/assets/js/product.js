@@ -124,4 +124,4 @@ function addToCartDetail() {
 }
 
 // INIT
-loadProductDetail();
+loadProductDetail();p
