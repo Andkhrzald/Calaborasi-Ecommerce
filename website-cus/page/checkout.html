@@ -5,12 +5,173 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout - ADMyself Store</title>
   <link rel="stylesheet" href="../assets/css/style-new.css">
+  <style>
+    .checkout-hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      padding: 3rem 1.5rem 2.5rem;
+      text-align: center;
+    }
+    .checkout-hero h1 {
+      font-size: 2.6rem;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+    .checkout-hero p {
+      max-width: 680px;
+      margin: 0 auto;
+      font-size: 1rem;
+      opacity: 0.88;
+    }
+    .checkout-page {
+      max-width: 1140px;
+      margin: 0 auto 3rem;
+      padding: 0 1.5rem;
+    }
+    .checkout-card {
+      background: #ffffff;
+      border-radius: 28px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      margin-top: -4rem;
+      padding: 2rem;
+    }
+    .checkout-card header {
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    .checkout-card header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: #2d3436;
+    }
+    .checkout-card header p {
+      margin: 0.6rem 0 0;
+      color: #6b7280;
+    }
+    .cancel-checkout {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    .cancel-checkout:hover {
+      background: #e5e7eb;
+      color: #111827;
+    }
+    .checkout-grid {
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: 1fr 1fr;
+    }
+    .order-summary, .customer-form {
+      background: #f8f9ff;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      padding: 1.5rem;
+    }
+    .order-summary h2, .customer-form h2 {
+      margin-bottom: 1.5rem;
+      font-size: 1.05rem;
+      color: #111827;
+    }
+    .checkout-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .checkout-item:last-child { border-bottom: none; }
+    .checkout-item img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+    .checkout-item h4 {
+      margin: 0;
+      font-size: 1rem;
+      color: #111827;
+    }
+    .checkout-item p {
+      margin: 0.25rem 0 0;
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+    .checkout-total {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e5e7eb;
+      text-align: center;
+    }
+    .checkout-total h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.1rem;
+      color: #111827;
+    }
+    .checkout-total p {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #2563eb;
+      font-weight: 700;
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #111827;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    .place-order-btn {
+      width: 100%;
+      background: #667eea;
+      color: #fff;
+      border: none;
+      padding: 1rem;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .place-order-btn:hover {
+      background: #5a67d8;
+      transform: translateY(-2px);
+    }
+    @media (max-width: 960px) {
+      .checkout-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
 <!-- NAVBAR -->
 <div class="navbar">
-  <div class="logo">caloborasi Store</div>
+  <div class="logo">ADMyself Store</div>
   <div class="menu">
     <a href="website.html">Home</a>
     <a href="men.html">Men</a>
@@ -19,55 +180,68 @@
   </div>
 </div>
 
-<!-- CHECKOUT -->
-<div class="checkout-container">
-  <h1>Checkout Pembayaran</h1>
+<section class="hero checkout-hero">
+  <div class="hero-content">
+    <p class="eyebrow" style="text-transform: uppercase; letter-spacing: 0.16em; opacity: 0.85; margin-bottom: 1rem;">Checkout</p>
+    <h1>Selesaikan Pembelian</h1>
+    <p>Isi informasi pengiriman dan konfirmasi pesanan Anda. Pastikan data yang dimasukkan benar untuk memudahkan proses pengiriman.</p>
+  </div>
+</section>
 
-  <div class="checkout-content">
-    <div class="order-summary">
-      <h2>Ringkasan Pesanan</h2>
-      <div id="order-items">
-        <!-- Order items will be loaded here -->
+<main class="checkout-page">
+  <div class="checkout-card">
+    <header>
+      <a href="website.html" class="cancel-checkout" onclick="return confirm('Apakah Anda yakin ingin membatalkan checkout? Barang di keranjang akan tetap tersimpan.')">← Batal Checkout</a>
+      <h1>Checkout Pembayaran</h1>
+      <p>Periksa ringkasan pesanan dan lengkapi informasi pengiriman untuk menyelesaikan pembelian.</p>
+    </header>
+
+    <div class="checkout-grid">
+      <div class="order-summary">
+        <h2>Ringkasan Pesanan</h2>
+        <div id="order-items">
+          <!-- Order items will be loaded here -->
+        </div>
+        <div class="checkout-total">
+          <h3>Total Pembayaran</h3>
+          <p>Rp <span id="checkout-total">0</span></p>
+        </div>
       </div>
-      <div class="checkout-total">
-        <h3>Total Pembayaran</h3>
-        <p style="font-size: 1.5rem; color: #007bff; font-weight: 700;">Rp <span id="checkout-total">0</span></p>
+
+      <div class="customer-form">
+        <h2>Informasi Pengiriman</h2>
+        <form id="checkout-form">
+          <div class="form-group">
+            <label for="name">Nama Lengkap *</label>
+            <input type="text" id="name" required placeholder="Masukkan nama lengkap">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" required placeholder="email@example.com">
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Nomor Telepon *</label>
+            <input type="tel" id="phone" required placeholder="08123456789">
+          </div>
+
+          <div class="form-group">
+            <label for="address">Alamat Lengkap *</label>
+            <textarea id="address" rows="3" required placeholder="Jl. Contoh No. 123, RT/RW 01/02, Kelurahan, Kecamatan, Kota, Kode Pos"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Catatan Tambahan (Opsional)</label>
+            <textarea id="notes" rows="2" placeholder="Warna, ukuran, atau instruksi khusus"></textarea>
+          </div>
+
+          <button type="submit" class="place-order-btn">Buat Pesanan</button>
+        </form>
       </div>
-    </div>
-
-    <div class="customer-form">
-      <h2>Informasi Pengiriman</h2>
-      <form id="checkout-form">
-        <div class="form-group">
-          <label for="name">Nama Lengkap *</label>
-          <input type="text" id="name" required placeholder="Masukkan nama lengkap">
-        </div>
-
-        <div class="form-group">
-          <label for="email">Email *</label>
-          <input type="email" id="email" required placeholder="email@example.com">
-        </div>
-
-        <div class="form-group">
-          <label for="phone">Nomor Telepon *</label>
-          <input type="tel" id="phone" required placeholder="08123456789">
-        </div>
-
-        <div class="form-group">
-          <label for="address">Alamat Lengkap *</label>
-          <textarea id="address" rows="3" required placeholder="Jl. Contoh No. 123, RT/RW 01/02, Kelurahan, Kecamatan, Kota, Kode Pos"></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="notes">Catatan Tambahan (Opsional)</label>
-          <textarea id="notes" rows="2" placeholder="Warna, ukuran, atau instruksi khusus"></textarea>
-        </div>
-
-        <button type="submit" class="place-order-btn">Buat Pesanan</button>
-      </form>
     </div>
   </div>
-</div>
+</main>
 
 <script src="../assets/js/checkout.js"></script>
 

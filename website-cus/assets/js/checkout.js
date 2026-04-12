@@ -74,7 +74,7 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
     notes: document.getElementById('notes').value
   };
 
-  // Simpan pesanan ke antrean admin
+  // Simpan pesanan ke antrean admin untuk proses approval
   let antrean = JSON.parse(localStorage.getItem("antrean_pesanan")) || [];
   cart.forEach(item => {
     antrean.push({
@@ -85,9 +85,23 @@ document.getElementById('checkout-form').addEventListener('submit', async (e) =>
   });
   localStorage.setItem("antrean_pesanan", JSON.stringify(antrean));
 
+  // Simpan riwayat pesanan customer untuk tracking status
+  const orderId = `ORD${Date.now()}`;
+  const orderHistory = JSON.parse(localStorage.getItem('order_history')) || [];
+  orderHistory.push({
+    id: orderId,
+    trackingCode: `TRK${Math.floor(100000 + Math.random() * 900000)}`,
+    createdAt: new Date().toISOString(),
+    customer: customerData,
+    items: cart,
+    total: total,
+  });
+  localStorage.setItem('order_history', JSON.stringify(orderHistory));
+  localStorage.setItem('last_order_id', orderId);
+
   alert('✅ Pesanan berhasil!');
   localStorage.removeItem('cart');
-  window.location.href = '../../admin/login.html';
+  window.location.href = `order-status.html?orderId=${encodeURIComponent(orderId)}`;
 });
 
 loadCart();

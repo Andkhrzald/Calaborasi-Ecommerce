@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terima Kasih - ADMyself Store</title>
+  <link rel="stylesheet" href="../assets/css/style-new.css">
+</head>
+<body>
+  <div class="thankyou-page" style="max-width: 600px; margin: 6rem auto; padding: 2rem; text-align: center; border: 1px solid #ddd; border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,0.08);">
+    <h1>✅ Terima Kasih!</h1>
+    <p style="font-size: 1.1rem; color: #333;">Pesanan Anda sudah diterima dan sedang diproses.</p>
+    <p style="color: #555;">Tim kami akan memproses pesanan Anda, lalu admin akan melakukan approval dan persiapan pengiriman.</p>
+    <p id="redirect-message" style="color: #555; margin-top: 1rem;">Anda akan kembali ke halaman utama dalam 5 detik.</p>
+    <a href="website.html" style="display: inline-block; margin-top: 1.5rem; padding: 0.9rem 1.6rem; background: #007bff; color: #fff; border-radius: 999px; text-decoration: none;">Kembali Belanja</a>
+  </div>
+  <script>
+    let seconds = 5;
+    const message = document.getElementById('redirect-message');
+    const timer = setInterval(() => {
+      seconds -= 1;
+      if (seconds <= 0) {
+        clearInterval(timer);
+        window.location.href = 'website.html';
+      } else {
+        message.textContent = `Anda akan kembali ke halaman utama dalam ${seconds} detik.`;
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
