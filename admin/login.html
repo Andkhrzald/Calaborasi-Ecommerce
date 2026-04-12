@@ -3,13 +3,63 @@
   <head>
     <meta charset="UTF-8" />
     <title>Login Crew - Elvoo</title>
-        <link rel="stylesheet" href="style1.css" />
- </head>
+    <link rel="stylesheet" href="style1.css" />
+    <style>
+      /* Backup style jika file CSS tidak terbaca */
+      body {
+        font-family: sans-serif;
+        background: #1a1a1a;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .box {
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        width: 300px;
+      }
+      h2 {
+        margin-bottom: 20px;
+        color: #333;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-sizing: border-box;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      button:hover {
+        background: #1d4ed8;
+      }
+    </style>
+  </head>
   <body>
     <div class="box">
       <h2>ELVOO ADMIN</h2>
-      <input type="text" id="user" placeholder="Username" />
-      <input type="password" id="pass" placeholder="Password" />
+      <input type="text" id="user" placeholder="Username" autocomplete="off" />
+      <input
+        type="password"
+        id="pass"
+        placeholder="Password"
+        onkeypress="if (event.key === 'Enter') login();"
+      />
       <button onclick="login()">LOGIN</button>
     </div>
 
@@ -17,20 +67,31 @@
       function login() {
         const u = document.getElementById("user").value;
         const p = document.getElementById("pass").value;
+
+        // Database user lokal
         const database = [
           { username: "admin_brand", pass: "123", role: "Owner" },
           { username: "crew_stok", pass: "456", role: "Warehouse" },
           { username: "crew_input", pass: "789", role: "Staff" },
         ];
+
         const cek = database.find(
           (item) => item.username === u && item.pass === p,
         );
+
         if (cek) {
+          // Menyimpan data user yang login ke session
           sessionStorage.setItem("loggedInUser", JSON.stringify(cek));
+          // Diarahkan ke dashboard
           window.location.href = "index.html";
         } else {
-          alert("Data tidak dikenal!");
+          alert("Username atau Password salah!");
         }
+      }
+
+      // Cek jika sudah login, langsung lempar ke index
+      if (sessionStorage.getItem("loggedInUser")) {
+        window.location.href = "index.html";
       }
     </script>
   </body>
