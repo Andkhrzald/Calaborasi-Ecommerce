@@ -142,15 +142,80 @@ function loadCart() {
 
 function updateCartUI() {
   const cartEl = document.getElementById("cart");
+  const cartDrawerItemsEl = document.getElementById("cartDrawerItems");
   const cartCount = document.getElementById("cartCount");
+  const cartBadge = document.getElementById("cartBadge");
+  const totalEl = document.getElementById("total");
+  const totalDrawerEl = document.getElementById("totalDrawer");
 
   cartEl.innerHTML = "";
+  cartDrawerItemsEl.innerHTML = "";
   const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
   cartCount.textContent = totalItems;
+  cartBadge.textContent = totalItems;
+
+  total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  totalEl.textContent = formatRupiah(total);
+  totalDrawerEl.textContent = formatRupiah(total);
 
   if (cart.length === 0) {
-    cartEl.innerHTML = "<p>Keranjang kosong</p>";
+    cartEl.innerHTML = `
+      <div class="empty-cart">
+        <h4>Keranjang Anda masih kosong</h4>
+        <p>Tambahkan produk untuk mulai berbelanja. Total akan terlihat di sini setelah Anda memilih barang.</p>
+      </div>
+    `;
+    cartDrawerItemsEl.innerHTML = `
+      <div class="empty-cart">
+        <h4>Keranjang Anda masih kosong</h4>
+        <p>Tambahkan produk untuk mulai berbelanja. Total akan terlihat di sini setelah Anda memilih barang.</p>
+      </div>
+    `;
+    return;
   }
+
+  const renderCartItems = (container) => {
+    cart.forEach(item => {
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "cart-item-sidebar";
+      itemDiv.innerHTML = `
+        <div>
+          <h4>${item.name}</h4>
+          <div class="item-price">Rp ${formatRupiah(item.price)} x ${item.qty}</div>
+          <div class="item-price" style="margin-top: 0.35rem; font-size: 0.85rem; color: #4b5563;">Subtotal: Rp ${formatRupiah(item.price * item.qty)}</div>
+        </div>
+        <div class="cart-item-actions">
+          <button type="button" class="qty-btn decrease">-</button>
+          <span>${item.qty}</span>
+          <button type="button" class="qty-btn increase">+</button>
+          <button type="button" class="remove-btn">✕</button>
+        </div>
+      `;
+
+      itemDiv.querySelector('.decrease').addEventListener('click', () => decreaseQty(item.name));
+      itemDiv.querySelector('.increase').addEventListener('click', () => increaseQty(item.name));
+      itemDiv.querySelector('.remove-btn').addEventListener('click', () => removeItem(item.name));
+
+      container.appendChild(itemDiv);
+    });
+  };
+
+  renderCartItems(cartEl);
+  renderCartItems(cartDrawerItemsEl);
+}
+
+function toggleCartDrawer() {
+  const drawer = document.getElementById('cartDrawer');
+  const overlay = document.getElementById('cartDrawerOverlay');
+  drawer.classList.toggle('open');
+  overlay.classList.toggle('open');
+}
+
+function closeCartDrawer() {
+  const drawer = document.getElementById('cartDrawer');
+  const overlay = document.getElementById('cartDrawerOverlay');
+  drawer.classList.remove('open');
+  overlay.classList.remove('open');
 }
 
 function getLastOrderId() {
@@ -181,7 +246,84 @@ function checkout() {
   window.location.href = 'checkout.html';
 }
 
+let currentSort = 'terbaru';
+let currentProducts = [];
+
+function searchProduct() {
+  const searchTerm = document.getElementById('search').value.toLowerCase();
+  let filtered = allProducts.filter(p => 
+    p.name.toLowerCase().includes(searchTerm)
+  );
+  
+  // Apply current sort
+  sortProducts(currentSort, filtered);
+}
+
+function sortProducts(sortType, productsToSort = null) {
+  currentSort = sortType;
+  let products = productsToSort || allProducts;
+  let sorted = [...products]; // Copy array to avoid mutation
+  
+  switch(sortType) {
+    case 'terbaru':
+      sorted.sort((a, b) => b.id - a.id); // Newest first
+      break;
+    case 'terlaris':
+      sorted.sort((a, b) => b.sold - a.sold); // Most sold first
+      break;
+    case 'harga-terendah':
+      sorted.sort((a, b) => a.price - b.price); // Lowest price first
+      break;
+    case 'diskon':
+      sorted.sort((a, b) => (b.discount || 0) - (a.discount || 0)); // Highest discount first
+      break;
+    default:
+      sorted.sort((a, b) => b.id - a.id);
+  }
+  
+  currentProducts = sorted;
+  renderProductsGrid(sorted);
+  
+  // Update active button
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.sort === sortType) {
+      btn.classList.add('active');
+    }
+  });
+}
+
 // INIT
 loadProductsSimple();
 loadCart();
 updateOrderStatusLink();
+
+// Add event listeners to filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const sortType = btn.dataset.sort;
+    sortProducts(sortType);
+  });
+});
+
+// Scroll detection for floating cart button
+let lastScrollTop = 0;
+const floatingCartBtn = document.getElementById('floatingCartBtn');
+if (floatingCartBtn) {
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // Always show button in top 300px
+    if (scrollTop < 300) {
+      floatingCartBtn.classList.remove('hidden');
+    } else if (scrollTop > lastScrollTop) {
+      // Scrolling down - hide button
+      floatingCartBtn.classList.add('hidden');
+    } else {
+      // Scrolling up - show button
+      floatingCartBtn.classList.remove('hidden');
+    }
+    
+    lastScrollTop = scrollTop;
+  });
+}

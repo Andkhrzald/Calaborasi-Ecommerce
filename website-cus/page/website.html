@@ -47,7 +47,7 @@
     </div>
 
     <div class="sidebar-section">
-      <h3>Rating</h3>
+      <h3>Fitur iklan atau apalah nnti</h3>
       <label><input type="checkbox"> ⭐⭐⭐⭐⭐ 5 Bintang</label>
       <label><input type="checkbox"> ⭐⭐⭐⭐ 4+ Bintang</label>
       <label><input type="checkbox"> ⭐⭐⭐ 3+ Bintang</label>
@@ -60,10 +60,10 @@
     <div class="search-top">
       <input type="text" id="search" placeholder="🔍 Cari produk fashion..." onkeyup="searchProduct()">
       <div class="search-filters">
-        <button class="filter-btn active">Terbaru</button>
-        <button class="filter-btn">Terlaris</button>
-        <button class="filter-btn">Harga Terendah</button>
-        <button class="filter-btn">Harga Tertinggi</button>
+        <button class="filter-btn active" data-sort="terbaru">Terbaru</button>
+        <button class="filter-btn" data-sort="terlaris">Terlaris</button>
+        <button class="filter-btn" data-sort="harga-terendah">Harga Terendah</button>
+        <button class="filter-btn" data-sort="diskon">Diskon</button>
       </div>
     </div>
 
@@ -75,8 +75,8 @@
     </section>
   </div>
 
-  <!-- RIGHT SIDEBAR - CART (FLOATING) -->
-  <div class="right-sidebar">
+  <!-- RIGHT SIDEBAR - CART (Desktop Only) -->
+  <div class="right-sidebar" id="desktopCart">
     <div class="cart-sidebar">
       <div class="cart-header">
         <h3>🛒 Keranjang</h3>
@@ -90,22 +90,41 @@
       <div class="cart-divider"></div>
 
       <div class="cart-summary">
-        <div class="summary-row">
-          <span>Subtotal:</span>
-          <strong>Rp <span id="subtotal">0</span></strong>
-        </div>
-        <div class="summary-row">
-          <span>Ongkir:</span>
-          <strong>Rp <span id="shipping">0</span></strong>
-        </div>
         <div class="summary-row total">
           <span>Total:</span>
           <strong>Rp <span id="total">0</span></strong>
         </div>
+        <p class="cart-footnote">Biaya pengiriman akan dihitung saat checkout berdasarkan alamat Anda dan pilihan kurir.</p>
       </div>
 
       <button class="checkout-btn" onclick="checkout()">🚀 Checkout</button>
       <a href="#" class="continue-shop">Lanjut Belanja</a>
+    </div>
+  </div>
+
+  <!-- MOBILE FLOATING CART BUTTON -->
+  <button class="floating-cart-btn" id="floatingCartBtn" onclick="toggleCartDrawer()">
+    🛒
+    <span class="cart-badge" id="cartBadge">0</span>
+  </button>
+
+  <!-- MOBILE CART DRAWER MODAL -->
+  <div class="cart-drawer-overlay" id="cartDrawerOverlay" onclick="closeCartDrawer()"></div>
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer-header">
+      <h3>Keranjang Belanja</h3>
+      <button class="close-drawer-btn" onclick="closeCartDrawer()">✕</button>
+    </div>
+    <div class="cart-drawer-items" id="cartDrawerItems">
+      <div class="empty-cart"><p>Keranjang kosong</p></div>
+    </div>
+    <div class="cart-drawer-footer">
+      <div class="summary-row total">
+        <span>Total:</span>
+        <strong>Rp <span id="totalDrawer">0</span></strong>
+      </div>
+      <p class="cart-footnote">Biaya pengiriman akan dihitung saat checkout berdasarkan alamat Anda dan pilihan kurir.</p>
+      <button class="checkout-btn" onclick="checkout()">🚀 Checkout</button>
     </div>
   </div>
 
@@ -148,7 +167,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p>&copy; 2026 ADMyself Store. All rights reserved. Made with ❤️ by Andikha Rizaldi</p>
+    <p>&copy; 2026 ADMyself Store. All rights reserved. Made with by Andikha Rizaldi</p>
   </div>
 </div>
 
