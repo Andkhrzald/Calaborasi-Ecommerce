@@ -5,22 +5,21 @@ if (!user) window.location.href = "login.html";
 document.getElementById("user-display").innerText = user.username;
 document.getElementById("role-display").innerText = "Jabatan: " + user.role;
 
-let produk = JSON.parse(localStorage.getItem("produk_clothing")) || [];
+// Gunakan fungsi untuk selalu ambil data fresh dari localStorage
+function getProduk() {
+    return JSON.parse(localStorage.getItem("produk_clothing")) || [];
+}
 
-// --- 2. SISTEM NAVIGASI (FIXED) ---
+// --- 2. SISTEM NAVIGASI ---
 function changePage(pageName) {
-    // Sembunyikan semua halaman
     const allPages = document.querySelectorAll('.content-page');
     allPages.forEach(p => p.style.display = 'none');
 
-    // Reset warna menu sidebar
     const allMenus = document.querySelectorAll('.menu-item');
     allMenus.forEach(m => m.style.background = 'transparent');
 
-    // Tampilkan halaman terpilih
     document.getElementById('page-' + pageName).style.display = 'block';
 
-    // Highlight menu yang aktif
     const menuMap = { 
         'inventory': 'menu-inv', 
         'sales': 'menu-sales', 
@@ -31,14 +30,52 @@ function changePage(pageName) {
         document.getElementById(menuMap[pageName]).style.background = '#333';
     }
 
-    // Load data spesifik halaman
     if (pageName === 'inventory') renderInventory();
     if (pageName === 'sales') renderPenjualan();
     if (pageName === 'website') loadBannerPreview();
     if (pageName === 'orders') renderOrders();
 }
 
-// --- 3. FITUR INVENTORY ---
+// --- 3. FITUR INVENTORY (DENGAN FITUR EDIT) ---
+function renderInventory() {
+    const tbody = document.getElementById("tabel-body");
+    const dataProduk = getProduk();
+
+    tbody.innerHTML = dataProduk.map((p, index) => `
+        <tr>
+            <td>
+                <img src="../assets/img/${p.gambar}" width="50" height="50" style="object-fit:cover" onerror="this.src='https://via.placeholder.com/50'">
+                <input type="text" id="edit-img-${index}" value="${p.gambar}" style="width: 80px; font-size: 10px; display:block; margin-top:5px;" placeholder="nama_file.jpg">
+            </td>
+            <td><input type="text" id="edit-nama-${index}" value="${p.nama}" style="width: 100%; font-weight:bold;"></td>
+            <td><input type="number" id="edit-harga-${index}" value="${p.harga}" style="width: 100px;"></td>
+            <td><input type="number" id="edit-stok-${index}" value="${p.stok}" style="width: 60px;"> Pcs</td>
+            <td>
+                <button class="btn-save" onclick="updateProduk(${index})" style="background:#2563eb; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Simpan</button>
+                <button class="btn-delete" onclick="hapusProduk(${p.id})" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Hapus</button>
+            </td>
+        </tr>
+    `).join("");
+
+    if (user.role === "Warehouse") {
+        document.getElementById("input-area").style.display = "none";
+    }
+}
+
+function updateProduk(index) {
+    let dataProduk = getProduk();
+    
+    // Ambil nilai dari input yang sedang diedit
+    dataProduk[index].nama = document.getElementById(`edit-nama-${index}`).value;
+    dataProduk[index].harga = document.getElementById(`edit-harga-${index}`).value;
+    dataProduk[index].stok = parseInt(document.getElementById(`edit-stok-${index}`).value);
+    dataProduk[index].gambar = document.getElementById(`edit-img-${index}`).value;
+
+    localStorage.setItem("produk_clothing", JSON.stringify(dataProduk));
+    alert("Data Berhasil Diperbarui!");
+    renderInventory();
+}
+
 function tambahProduk() {
     const n = document.getElementById("nama").value;
     const h = document.getElementById("harga").value;
@@ -46,8 +83,9 @@ function tambahProduk() {
     const g = document.getElementById("gambar").value;
 
     if (n && h && s && g) {
-        produk.push({ id: Date.now(), nama: n, harga: h, stok: s, gambar: g, creator: user.username });
-        localStorage.setItem("produk_clothing", JSON.stringify(produk));
+        let dataProduk = getProduk();
+        dataProduk.push({ id: Date.now(), nama: n, harga: h, stok: s, gambar: g, creator: user.username });
+        localStorage.setItem("produk_clothing", JSON.stringify(dataProduk));
         renderInventory();
         alert("Produk Berhasil Disimpan!");
         // Reset form
@@ -60,32 +98,16 @@ function tambahProduk() {
     }
 }
 
-function renderInventory() {
-    const tbody = document.getElementById("tabel-body");
-    tbody.innerHTML = produk.map(p => `
-        <tr>
-            <td><img src="../assets/img/${p.gambar}" width="50" height="50" style="object-fit:cover" onerror="this.src='https://via.placeholder.com/50'"></td>
-            <td><b>${p.nama}</b></td>
-            <td>Rp ${parseInt(p.harga).toLocaleString()}</td>
-            <td>${p.stok} Pcs</td>
-            <td><button class="btn-delete" onclick="hapusProduk(${p.id})">Hapus</button></td>
-        </tr>
-    `).join("");
-
-    if (user.role === "Warehouse") {
-        document.getElementById("input-area").style.display = "none";
-    }
-}
-
 function hapusProduk(id) {
     if (confirm("Hapus produk ini?")) {
-        produk = produk.filter(p => p.id !== id);
-        localStorage.setItem("produk_clothing", JSON.stringify(produk));
+        let dataProduk = getProduk();
+        dataProduk = dataProduk.filter(p => p.id !== id);
+        localStorage.setItem("produk_clothing", JSON.stringify(dataProduk));
         renderInventory();
     }
 }
 
-// --- 4. FITUR ORDER APPROVAL (NEW) ---
+// --- 4. FITUR ORDER APPROVAL ---
 function renderOrders() {
     const antrean = JSON.parse(localStorage.getItem("antrean_pesanan")) || [];
     const tbody = document.getElementById("tabel-order-approval");
@@ -111,13 +133,12 @@ function renderOrders() {
 function approveOrder(index) {
     let antrean = JSON.parse(localStorage.getItem("antrean_pesanan")) || [];
     let penghasilan = JSON.parse(localStorage.getItem("laporan_penjualan")) || [];
-    let dataProduk = JSON.parse(localStorage.getItem("produk_clothing")) || [];
+    let dataProduk = getProduk();
     
     const order = antrean[index];
-
-    // 1. Kurangi Stok di Inventory - match by nama produk
-    const productName = order.namaProduk.split(" (x")[0]; // Extract product name before (x
+    const productName = order.namaProduk.split(" (x")[0]; 
     const pIdx = dataProduk.findIndex(p => p.nama === productName);
+
     if (pIdx !== -1) {
         if (dataProduk[pIdx].stok > 0) {
             dataProduk[pIdx].stok -= 1;
@@ -128,15 +149,12 @@ function approveOrder(index) {
         }
     }
 
-    // 2. Masukkan ke Laporan Penghasilan
     penghasilan.push(order);
     localStorage.setItem("laporan_penjualan", JSON.stringify(penghasilan));
-    
-    // 3. Hapus dari antrean
     antrean.splice(index, 1);
     localStorage.setItem("antrean_pesanan", JSON.stringify(antrean));
     
-    alert("Pesanan Disetujui! Stok berkurang & saldo bertambah.");
+    alert("Pesanan Disetujui!");
     renderOrders();
 }
 
@@ -164,7 +182,7 @@ function renderPenjualan() {
     totalDisplay.innerText = `Rp ${total.toLocaleString()}`;
 }
 
-// --- 6. FITUR WEBSITE & BANNER CROP ---
+// --- 6. FITUR WEBSITE & BANNER ---
 function previewCrop() {
     const pos = document.getElementById("banner-pos").value;
     document.getElementById("img-preview").style.objectPosition = pos;
@@ -173,26 +191,21 @@ function previewCrop() {
 function updateBanner() {
     const url = document.getElementById("banner-url").value;
     const pos = document.getElementById("banner-pos").value;
-    
     if (url) {
         localStorage.setItem("banner_promo", url);
         localStorage.setItem("banner_posisi", pos);
-        alert("Banner dan posisi potong berhasil diperbarui!");
+        alert("Banner diperbarui!");
         loadBannerPreview();
-    } else {
-        alert("Masukkan nama file gambar!");
     }
 }
 
 function loadBannerPreview() {
     const saved = localStorage.getItem("banner_promo");
     const savedPos = localStorage.getItem("banner_posisi") || "center";
-    
     if (saved) {
         const img = document.getElementById("img-preview");
         img.src = "../assets/img/" + saved;
         img.style.objectPosition = savedPos;
-        
         document.getElementById("banner-url").value = saved;
         document.getElementById("banner-pos").value = savedPos;
     }
@@ -204,5 +217,4 @@ function logout() {
     window.location.href = "login.html";
 }
 
-// Jalankan Inventory sebagai halaman default saat login
 changePage('inventory');

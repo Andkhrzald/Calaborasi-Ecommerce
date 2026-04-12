@@ -1,5 +1,5 @@
 body {
-  background: #111;
+  background: #f8dac2;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -8,7 +8,7 @@ body {
 }
 
 .box {
-  background: #fff;
+  background: #bdd2ff;
   padding: 40px;
   border-radius: 15px;
   width: 320px;

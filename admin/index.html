@@ -5,28 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Admin - Elvoo</title>
     <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Style tambahan untuk input di dalam tabel agar rapi */
+      table input {
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .btn-save {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 5px;
+      }
+      .btn-delete {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .menu-item {
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 5px;
+      }
+    </style>
   </head>
   <body>
     <div class="sidebar">
       <h2>ELVOO ADMIN</h2>
-      <div style="margin-bottom: 20px">
-        <p id="user-display" style="font-weight: bold; color: white"></p>
+      <div style="margin-bottom: 20px; padding: 0 10px">
+        <p
+          id="user-display"
+          style="font-weight: bold; color: white; margin: 0"
+        ></p>
         <small id="role-display" style="color: #888"></small>
       </div>
 
       <nav>
-        <ul style="list-style: none">
+        <ul style="list-style: none; padding: 0">
           <li onclick="changePage('inventory')" id="menu-inv" class="menu-item">
-             Inventory
+            📦 Inventory
           </li>
           <li onclick="changePage('orders')" id="menu-orders" class="menu-item">
-             Pesanan Masuk
+            🔔 Pesanan Masuk
           </li>
           <li onclick="changePage('sales')" id="menu-sales" class="menu-item">
-             Penghasilan
+            💰 Penghasilan
           </li>
           <li onclick="changePage('website')" id="menu-web" class="menu-item">
-             Website
+            🌐 Website
           </li>
         </ul>
       </nav>
@@ -57,6 +92,7 @@
             padding: 20px;
             border-radius: 12px;
             margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
           "
         >
           <h3>Daftar Barang</h3>
@@ -94,7 +130,6 @@
 
       <div id="page-sales" class="content-page" style="display: none">
         <div
-          class="stat-card"
           style="
             background: #10b981;
             color: white;
@@ -163,11 +198,13 @@
     </div>
 
     <script>
+      // AUTH CHECK
       const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
       if (!user) window.location.href = "login.html";
       document.getElementById("user-display").innerText = user.username;
       document.getElementById("role-display").innerText = "Role: " + user.role;
 
+      // NAVIGATION
       function changePage(pageName) {
         document
           .querySelectorAll(".content-page")
@@ -177,16 +214,10 @@
           .forEach((m) => (m.style.background = "transparent"));
 
         document.getElementById("page-" + pageName).style.display = "block";
-        document.getElementById(
-          "menu-" +
-            (pageName === "inventory"
-              ? "inv"
-              : pageName === "orders"
-                ? "orders"
-                : pageName === "sales"
-                  ? "sales"
-                  : "web"),
-        ).style.background = "#333";
+
+        const menuId = "menu-" + (pageName === "inventory" ? "inv" : pageName);
+        const menuElem = document.getElementById(menuId);
+        if (menuElem) menuElem.style.background = "#333";
 
         if (pageName === "inventory") renderInventory();
         if (pageName === "orders") renderOrders();
@@ -200,13 +231,19 @@
           JSON.parse(localStorage.getItem("produk_clothing")) || [];
         document.getElementById("tabel-body").innerHTML = produk
           .map(
-            (p) => `
+            (p, index) => `
                 <tr>
-                    <td><img src="../assets/img/${p.gambar}" width="40"></td>
-                    <td>${p.nama}</td>
-                    <td>Rp ${parseInt(p.harga).toLocaleString()}</td>
-                    <td>${p.stok}</td>
-                    <td><button onclick="hapusProduk(${p.id})">Hapus</button></td>
+                    <td>
+                        <img src="../assets/img/${p.gambar}" width="40" height="40" style="object-fit:cover; border-radius:4px;" onerror="this.src='https://via.placeholder.com/40'">
+                        <input type="text" id="edit-img-${index}" value="${p.gambar}" style="width:80px; font-size:10px; display:block; margin-top:5px;">
+                    </td>
+                    <td><input type="text" id="edit-nama-${index}" value="${p.nama}"></td>
+                    <td><input type="number" id="edit-harga-${index}" value="${p.harga}"></td>
+                    <td><input type="number" id="edit-stok-${index}" value="${p.stok}"></td>
+                    <td>
+                        <button class="btn-save" onclick="updateProduk(${index})">Simpan</button>
+                        <button class="btn-delete" onclick="hapusProduk(${p.id})">Hapus</button>
+                    </td>
                 </tr>`,
           )
           .join("");
@@ -218,20 +255,57 @@
           id: Date.now(),
           nama: document.getElementById("nama").value,
           harga: document.getElementById("harga").value,
-          stok: document.getElementById("stok").value,
+          stok: parseInt(document.getElementById("stok").value),
           gambar: document.getElementById("gambar").value,
         };
-        produk.push(data);
+        if (data.nama && data.harga) {
+          produk.push(data);
+          localStorage.setItem("produk_clothing", JSON.stringify(produk));
+          renderInventory();
+          alert("Produk Berhasil Ditambah!");
+          document
+            .querySelectorAll(".grid-in input")
+            .forEach((i) => (i.value = ""));
+        } else {
+          alert("Nama dan Harga harus diisi!");
+        }
+      }
+
+      function updateProduk(index) {
+        let produk = JSON.parse(localStorage.getItem("produk_clothing")) || [];
+        produk[index].nama = document.getElementById(
+          `edit-nama-${index}`,
+        ).value;
+        produk[index].harga = document.getElementById(
+          `edit-harga-${index}`,
+        ).value;
+        produk[index].stok = parseInt(
+          document.getElementById(`edit-stok-${index}`).value,
+        );
+        produk[index].gambar = document.getElementById(
+          `edit-img-${index}`,
+        ).value;
+
         localStorage.setItem("produk_clothing", JSON.stringify(produk));
+        alert("Data Berhasil Diperbarui!");
         renderInventory();
+      }
+
+      function hapusProduk(id) {
+        if (confirm("Hapus produk ini?")) {
+          let produk =
+            JSON.parse(localStorage.getItem("produk_clothing")) || [];
+          produk = produk.filter((p) => p.id !== id);
+          localStorage.setItem("produk_clothing", JSON.stringify(produk));
+          renderInventory();
+        }
       }
 
       // ORDER APPROVAL LOGIC
       function renderOrders() {
         const antrean =
           JSON.parse(localStorage.getItem("antrean_pesanan")) || [];
-        const tbody = document.getElementById("tabel-order-approval");
-        tbody.innerHTML = antrean
+        document.getElementById("tabel-order-approval").innerHTML = antrean
           .map(
             (item, index) => `
                 <tr>
@@ -239,8 +313,8 @@
                     <td>${item.namaProduk}</td>
                     <td>Rp ${item.hargaJual.toLocaleString()}</td>
                     <td>
-                        <button class="btn-approve" onclick="approveOrder(${index})">Approve</button>
-                        <button class="btn-reject" onclick="rejectOrder(${index})">Reject</button>
+                        <button style="background:#10b981; color:white; border:none; padding:5px; border-radius:4px; cursor:pointer;" onclick="approveOrder(${index})">Approve</button>
+                        <button style="background:#ef4444; color:white; border:none; padding:5px; border-radius:4px; cursor:pointer;" onclick="rejectOrder(${index})">Reject</button>
                     </td>
                 </tr>`,
           )
@@ -270,15 +344,18 @@
           renderOrders();
           alert("Pesanan Approved!");
         } else {
-          alert("Stok habis!");
+          alert("Stok habis atau produk tidak ditemukan!");
         }
       }
 
       function rejectOrder(index) {
-        let antrean = JSON.parse(localStorage.getItem("antrean_pesanan")) || [];
-        antrean.splice(index, 1);
-        localStorage.setItem("antrean_pesanan", JSON.stringify(antrean));
-        renderOrders();
+        if (confirm("Tolak pesanan ini?")) {
+          let antrean =
+            JSON.parse(localStorage.getItem("antrean_pesanan")) || [];
+          antrean.splice(index, 1);
+          localStorage.setItem("antrean_pesanan", JSON.stringify(antrean));
+          renderOrders();
+        }
       }
 
       function renderPenjualan() {
@@ -305,14 +382,16 @@
           document.getElementById("banner-pos").value,
         );
         alert("Banner Updated!");
+        loadBannerPreview();
       }
 
       function loadBannerPreview() {
         const b = localStorage.getItem("banner_promo");
         const p = localStorage.getItem("banner_posisi") || "center";
         if (b) {
-          document.getElementById("img-preview").src = "../assets/img/" + b;
-          document.getElementById("img-preview").style.objectPosition = p;
+          const img = document.getElementById("img-preview");
+          img.src = "../assets/img/" + b;
+          img.style.objectPosition = p;
         }
       }
 
@@ -320,6 +399,8 @@
         sessionStorage.clear();
         window.location.href = "login.html";
       }
+
+      // Default Page
       changePage("inventory");
     </script>
   </body>
