@@ -115,8 +115,9 @@ function approveOrder(index) {
     
     const order = antrean[index];
 
-    // 1. Kurangi Stok di Inventory
-    const pIdx = dataProduk.findIndex(p => p.id === order.idProduk);
+    // 1. Kurangi Stok di Inventory - match by nama produk
+    const productName = order.namaProduk.split(" (x")[0]; // Extract product name before (x
+    const pIdx = dataProduk.findIndex(p => p.nama === productName);
     if (pIdx !== -1) {
         if (dataProduk[pIdx].stok > 0) {
             dataProduk[pIdx].stok -= 1;
