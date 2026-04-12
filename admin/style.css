@@ -209,21 +209,8 @@ td {
 /* Pastikan container utama bersih */
 .sidebar nav ul {
     list-style: none;
-<<<<<<< HEAD
-    margin-top: 20px;
-    counter-increment: none;
-  }
-
-.sidebar nav ul li {
-    padding: 12px;
-    border-radius: 8px;
-    transition: 0.3s;
-    margin-bottom: 5px;
-    
-=======
     margin: 20px 0 0 0;
     padding: 0 15px; /* Memberi ruang di sisi kanan-kiri menu */
->>>>>>> c934e49e7c59d53fc6715611400e0bebdd935150
 }
 
 .sidebar nav ul li {
@@ -231,13 +218,7 @@ td {
     padding: 0;         /* Padding di li dinolkan agar tidak double */
     border-radius: 8px;
     transition: 0.3s;
-}
-
-/* Kunci kerapihan: Pindahkan padding ke tag 'a' */
-.sidebar nav ul {
-    list-style: none;
-    padding: 0 15px;
-    margin-top: 20px;
+    margin-bottom: 5px;
 }
 
 .sidebar nav ul li {

@@ -29,8 +29,7 @@ Proyek ini adalah contoh e-commerce sederhana yang dibagi menjadi dua bagian uta
 
 - Keranjang ditampilkan di sidebar kanan.
 - Jumlah barang total diambil dari `cart` dan ditampilkan di `cartCount`.
-- Tombol `checkout()` di `website.js` seharusnya membawa pengguna ke halaman `checkout.html`.
-- Namun, pada kode saat ini, fungsi `checkout()` memanggil `localStorage.setItem('customerName', customer)`, menggunakan variabel `customer` yang tidak didefinisikan di script. Ini adalah titik logika yang belum lengkap.
+- Tombol `checkout()` di `website.js` membawa pengguna ke halaman `checkout.html`.
 
 ### 4. Halaman checkout `website-cus/page/checkout.html`
 

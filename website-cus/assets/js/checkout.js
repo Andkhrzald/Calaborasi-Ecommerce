@@ -23,8 +23,10 @@ async function loadCart() {
     total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     renderOrderSummary();
 
-    if (customerName) {
+    if (customerName && typeof customerName === 'string' && customerName !== '[object HTMLInputElement]') {
       document.getElementById('name').value = customerName;
+    } else {
+      localStorage.removeItem('customerName');
     }
   } else {
     alert('Keranjang kosong. Kembali ke halaman utama.');
