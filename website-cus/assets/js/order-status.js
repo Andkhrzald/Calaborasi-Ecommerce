@@ -100,6 +100,7 @@ function loadOrderStatus() {
       order = history.find(o => o.id === lastOrderId);
     }
   }
+  
 
   if (!order) {
     order = history[history.length - 1];
