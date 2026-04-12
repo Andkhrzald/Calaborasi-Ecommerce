@@ -5,7 +5,6 @@ if (!user) window.location.href = "login.html";
 document.getElementById("user-display").innerText = user.username;
 document.getElementById("role-display").innerText = "Jabatan: " + user.role;
 
-// Gunakan fungsi untuk selalu ambil data fresh dari localStorage
 function getProduk() {
     return JSON.parse(localStorage.getItem("produk_clothing")) || [];
 }
@@ -36,7 +35,7 @@ function changePage(pageName) {
     if (pageName === 'orders') renderOrders();
 }
 
-// --- 3. FITUR INVENTORY (DENGAN FITUR EDIT) ---
+// --- 3. FITUR INVENTORY & MODAL ---
 function renderInventory() {
     const tbody = document.getElementById("tabel-body");
     const dataProduk = getProduk();
@@ -44,36 +43,65 @@ function renderInventory() {
     tbody.innerHTML = dataProduk.map((p, index) => `
         <tr>
             <td>
-                <img src="../assets/img/${p.gambar}" width="50" height="50" style="object-fit:cover" onerror="this.src='https://via.placeholder.com/50'">
-                <input type="text" id="edit-img-${index}" value="${p.gambar}" style="width: 80px; font-size: 10px; display:block; margin-top:5px;" placeholder="nama_file.jpg">
+                <img src="../assets/img/${p.gambar}" width="50" height="50" style="object-fit:cover; border-radius:4px;" onerror="this.src='https://via.placeholder.com/50'">
             </td>
-            <td><input type="text" id="edit-nama-${index}" value="${p.nama}" style="width: 100%; font-weight:bold;"></td>
-            <td><input type="number" id="edit-harga-${index}" value="${p.harga}" style="width: 100px;"></td>
-            <td><input type="number" id="edit-stok-${index}" value="${p.stok}" style="width: 60px;"> Pcs</td>
+            <td><strong>${p.nama}</strong></td>
+            <td>Rp ${parseInt(p.harga).toLocaleString()}</td>
+            <td>${p.stok} Pcs</td>
             <td>
-                <button class="btn-save" onclick="updateProduk(${index})" style="background:#2563eb; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Simpan</button>
-                <button class="btn-delete" onclick="hapusProduk(${p.id})" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Hapus</button>
+                <button onclick="openModal(${index})" class="btn-edit-trigger">⚙️ Edit</button>
             </td>
         </tr>
     `).join("");
 
     if (user.role === "Warehouse") {
-        document.getElementById("input-area").style.display = "none";
+        const inputArea = document.getElementById("input-area");
+        if(inputArea) inputArea.style.display = "none";
     }
 }
 
-function updateProduk(index) {
+// FUNGSI MODAL
+function openModal(index) {
+    const dataProduk = getProduk();
+    const p = dataProduk[index];
+
+    document.getElementById("modal-nama").value = p.nama;
+    document.getElementById("modal-harga").value = p.harga;
+    document.getElementById("modal-stok").value = p.stok;
+    document.getElementById("modal-gambar").value = p.gambar;
+    document.getElementById("modal-index").value = index;
+
+    document.getElementById("modal-edit").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("modal-edit").style.display = "none";
+}
+
+function simpanPerubahanModal() {
     let dataProduk = getProduk();
-    
-    // Ambil nilai dari input yang sedang diedit
-    dataProduk[index].nama = document.getElementById(`edit-nama-${index}`).value;
-    dataProduk[index].harga = document.getElementById(`edit-harga-${index}`).value;
-    dataProduk[index].stok = parseInt(document.getElementById(`edit-stok-${index}`).value);
-    dataProduk[index].gambar = document.getElementById(`edit-img-${index}`).value;
+    const index = document.getElementById("modal-index").value;
+
+    dataProduk[index].nama = document.getElementById("modal-nama").value;
+    dataProduk[index].harga = document.getElementById("modal-harga").value;
+    dataProduk[index].stok = parseInt(document.getElementById("modal-stok").value);
+    dataProduk[index].gambar = document.getElementById("modal-gambar").value;
 
     localStorage.setItem("produk_clothing", JSON.stringify(dataProduk));
     alert("Data Berhasil Diperbarui!");
+    closeModal();
     renderInventory();
+}
+
+function hapusProdukModal() {
+    if (confirm("Hapus produk ini?")) {
+        let dataProduk = getProduk();
+        const index = document.getElementById("modal-index").value;
+        dataProduk.splice(index, 1);
+        localStorage.setItem("produk_clothing", JSON.stringify(dataProduk));
+        closeModal();
+        renderInventory();
+    }
 }
 
 function tambahProduk() {
@@ -83,27 +111,34 @@ function tambahProduk() {
     const g = document.getElementById("gambar").value;
 
     if (n && h && s && g) {
-        let dataProduk = getProduk();
-        dataProduk.push({ id: Date.now(), nama: n, harga: h, stok: s, gambar: g, creator: user.username });
+        let dataProduk = JSON.parse(localStorage.getItem("produk_clothing")) || [];
+        
+        // Buat objek produk baru
+        const produkBaru = { 
+            id: Date.now(), // ID Unik untuk hapus/edit
+            nama: n, 
+            harga: parseInt(h), 
+            stok: s, 
+            gambar: g, 
+            creator: user.username 
+        };
+
+        dataProduk.push(produkBaru);
+        
+        // SIMPAN KE LOCALSTORAGE
         localStorage.setItem("produk_clothing", JSON.stringify(dataProduk));
+        
+        alert("Produk Berhasil Muncul di Web Customer!");
+        
         renderInventory();
-        alert("Produk Berhasil Disimpan!");
-        // Reset form
+        
+        // Reset Form
         document.getElementById("nama").value = "";
         document.getElementById("harga").value = "";
         document.getElementById("stok").value = "";
         document.getElementById("gambar").value = "";
     } else {
-        alert("Lengkapi semua data!");
-    }
-}
-
-function hapusProduk(id) {
-    if (confirm("Hapus produk ini?")) {
-        let dataProduk = getProduk();
-        dataProduk = dataProduk.filter(p => p.id !== id);
-        localStorage.setItem("produk_clothing", JSON.stringify(dataProduk));
-        renderInventory();
+        alert("Gagal: Semua data (Nama, Harga, Stok, Gambar) wajib diisi!");
     }
 }
 
@@ -123,8 +158,8 @@ function renderOrders() {
             <td>${item.namaProduk}</td>
             <td>Rp ${item.hargaJual.toLocaleString()}</td>
             <td>
-                <button onclick="approveOrder(${index})" style="background:#10b981; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Approve</button>
-                <button onclick="rejectOrder(${index})" style="background:#ef4444; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; font-weight:bold;">Reject</button>
+                <button onclick="approveOrder(${index})" class="btn-approve">Approve</button>
+                <button onclick="rejectOrder(${index})" class="btn-reject">Reject</button>
             </td>
         </tr>
     `).join("");
@@ -144,7 +179,7 @@ function approveOrder(index) {
             dataProduk[pIdx].stok -= 1;
             localStorage.setItem("produk_clothing", JSON.stringify(dataProduk));
         } else {
-            alert("Gagal Approve: Stok produk sudah habis!");
+            alert("Gagal Approve: Stok habis!");
             return;
         }
     }
@@ -153,7 +188,6 @@ function approveOrder(index) {
     localStorage.setItem("laporan_penjualan", JSON.stringify(penghasilan));
     antrean.splice(index, 1);
     localStorage.setItem("antrean_pesanan", JSON.stringify(antrean));
-    
     alert("Pesanan Disetujui!");
     renderOrders();
 }
@@ -171,15 +205,12 @@ function rejectOrder(index) {
 function renderPenjualan() {
     const dataSales = JSON.parse(localStorage.getItem("laporan_penjualan")) || [];
     const tbody = document.getElementById("tabel-penjualan");
-    const totalDisplay = document.getElementById("total-duit");
-
     let total = 0;
     tbody.innerHTML = dataSales.map(s => {
         total += s.hargaJual;
         return `<tr><td>${s.tanggal}</td><td>${s.namaProduk}</td><td>Rp ${s.hargaJual.toLocaleString()}</td></tr>`;
     }).reverse().join("");
-
-    totalDisplay.innerText = `Rp ${total.toLocaleString()}`;
+    document.getElementById("total-duit").innerText = `Rp ${total.toLocaleString()}`;
 }
 
 // --- 6. FITUR WEBSITE & BANNER ---
@@ -211,10 +242,15 @@ function loadBannerPreview() {
     }
 }
 
-// --- 7. LOGOUT ---
+// --- 7. LOGOUT & INITIALIZE ---
 function logout() {
     sessionStorage.clear();
     window.location.href = "login.html";
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById("modal-edit");
+    if (event.target == modal) closeModal();
 }
 
 changePage('inventory');
