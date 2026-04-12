@@ -1,0 +1,57 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Detail - ADMyself Store</title>
+    <link rel="stylesheet" href="../assets/css/style-new.css">
+    </head>
+    <body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+    <div class="logo">ADMyself Store</div>
+    <div class="menu">
+        <a href="index.html">Home</a>
+        <a href="#">Men</a>
+        <a href="#">Women</a>
+        <a href="#">Sale</a>
+    </div>
+    </div>
+
+    <!-- PRODUCT DETAIL -->
+    <div class="product-detail">
+    <div class="product-gallery">
+        <img id="product-img" class="product-main-image" src="" alt="Product Image">
+        <div class="product-thumbnails">
+        <!-- Thumbnails will be added dynamically -->
+        </div>
+    </div>
+    <div class="product-info">
+        <h1 id="product-name">Product Name</h1>
+        <div class="product-price" id="product-price">Rp 0</div>
+        <div class="product-rating">
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <span class="rating-count">(4.8) • 120 ulasan</span>
+        </div>
+        <div class="product-description" id="product-description">
+        Deskripsi produk akan dimuat di sini...
+        </div>
+        <div class="quantity-selector">
+        <label>Jumlah:</label>
+        <div class="quantity-controls">
+            <button class="qty-btn" onclick="changeQuantity(-1)">−</button>
+            <input type="number" class="quantity-input" id="qty" value="1" min="1" onchange="updateQuantity()">
+            <button class="qty-btn" onclick="changeQuantity(1)">+</button>
+        </div>
+        </div>
+        <div class="action-buttons">
+        <button class="add-to-cart-detail" onclick="addToCartDetail()">🛒 Tambah ke Keranjang</button>
+        <button class="back-btn" onclick="history.back()">⬅️ Kembali</button>
+        </div>
+    </div>
+    </div>
+
+    <script src="../assets/js/product.js"></script>
+</body>
+</html>
