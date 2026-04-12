@@ -154,10 +154,7 @@ function updateCartUI() {
 }
 
 function checkout() {
-  if (cart.length === 0) return alert("Keranjang kosong!");
-
-  const customer = prompt("Masukkan nama Anda:");
-  if (!customer) return;
+  if (cart.length === 0) return alert("Keranjang kosong!")
 
   localStorage.setItem('customerName', customer);
   window.location.href = 'checkout.html';

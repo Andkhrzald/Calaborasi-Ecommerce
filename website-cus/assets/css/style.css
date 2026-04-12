@@ -60,6 +60,7 @@ body {
   transition: all 0.3s;
   padding: 0.5rem 1rem;
   border-radius: 20px;
+  pointer-events: none;
 }
 
 .menu a:hover {
