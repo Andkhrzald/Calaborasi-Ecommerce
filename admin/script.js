@@ -1,9 +1,7 @@
 // --- 1. CONFIG & AUTH ---
-const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
-if (!user) window.location.href = "login.html";
+// (Fake localStorage login removed. Awaiting backend integration for session checking)
+// Backend will verify sessions automatically.
 
-document.getElementById("user-display").innerText = user.username;
-document.getElementById("role-display").innerText = "Jabatan: " + user.role;
 
 const getProduk = () => JSON.parse(localStorage.getItem("produk_clothing")) || [];
 
@@ -220,7 +218,54 @@ function resetFilter() {
     renderPenjualan();
 }
 
-function logout() { sessionStorage.clear(); window.location.href = "login.html"; }
+function logout() {
+    fetch("./backend/logout.php")
+        .then(() => {
+            window.location.href = "login.html";
+        });
+}
+
+// Ambil role dari session backend
+fetch("./backend/check_session.php")
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.status !== "logged_in") {
+            window.location.href = "login.html";
+            return;
+        }
+
+        const role = data.role;
+
+        // Ambil semua menu sesuai ID asli yang sudah ada di HTML Anda
+        const menuInventory = document.getElementById("menu-inv");
+        const menuOrders = document.getElementById("menu-orders");
+        const menuIncome = document.getElementById("menu-sales");
+        const menuWebsite = document.getElementById("menu-web");
+
+        // Reset dulu (semua tampil)
+        [menuInventory, menuOrders, menuIncome, menuWebsite].forEach(menu => {
+            if (menu) menu.style.display = "block";
+        });
+
+        // 🔥 LOGIC ROLE
+
+        if (role === "admin") {
+            // Admin: hanya Inventory + Website
+            if (menuOrders) menuOrders.style.display = "none";
+            if (menuIncome) menuIncome.style.display = "none";
+        }
+
+        if (role === "staff") {
+            // Staff: hanya Pesanan Masuk
+            if (menuInventory) menuInventory.style.display = "none";
+            if (menuIncome) menuIncome.style.display = "none";
+            if (menuWebsite) menuWebsite.style.display = "none";
+        }
+
+        // Owner tidak perlu diapa-apakan (full akses)
+
+    });
 
 // Jalankan Inventory sebagai halaman pertama
 changePage('inventory');
