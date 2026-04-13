@@ -15,7 +15,7 @@ function changePage(pageName) {
     document.querySelectorAll('.content-page').forEach(p => p.style.display = 'none');
     document.querySelectorAll('.menu-item').forEach(m => m.style.background = 'transparent');
     document.getElementById('page-' + pageName).style.display = 'block';
-    
+
     if (pageName === 'inventory') renderInventory();
     if (pageName === 'orders') renderOrders();
     if (pageName === 'sales') {
@@ -51,10 +51,10 @@ function openModal(i) {
 function closeModal() { document.getElementById("modal-edit").style.display = "none"; }
 
 function tambahProduk() {
-    const n = document.getElementById("nama").value, 
-          h = document.getElementById("harga").value, 
-          s = document.getElementById("stok").value, 
-          g = document.getElementById("gambar").value;
+    const n = document.getElementById("nama").value,
+        h = document.getElementById("harga").value,
+        s = document.getElementById("stok").value,
+        g = document.getElementById("gambar").value;
     if (n && h && s && g) {
         let data = getProduk();
         data.push({ id: Date.now(), nama: n, harga: parseInt(h), stok: parseInt(s), gambar: g });
@@ -72,7 +72,7 @@ function tambahProduk() {
 function renderOrders() {
     const antrean = JSON.parse(localStorage.getItem("antrean_pesanan")) || [];
     const tbody = document.getElementById("tabel-order-approval");
-    
+
     tbody.innerHTML = antrean.map((item, index) => `
         <tr>
             <td><small>${item.tanggal}</small></td>
@@ -119,7 +119,7 @@ function approveOrder(index) {
 }
 
 function rejectOrder(index) {
-    if(confirm("Tolak pesanan ini?")) {
+    if (confirm("Tolak pesanan ini?")) {
         let antrean = JSON.parse(localStorage.getItem("antrean_pesanan")) || [];
         antrean.splice(index, 1);
         localStorage.setItem("antrean_pesanan", JSON.stringify(antrean));
@@ -138,20 +138,20 @@ function renderPenjualan() {
     const dataSales = JSON.parse(localStorage.getItem("laporan_penjualan")) || [];
     const tbody = document.getElementById("tabel-penjualan");
     const totalDisplay = document.getElementById("total-duit");
-    
+
     const startDate = document.getElementById("filter-start").value;
     const endDate = document.getElementById("filter-end").value;
 
     let total = 0;
-    
+
     const filteredData = dataSales.filter(s => {
         if (!startDate || !endDate) return true;
         const itemDate = parseDate(s.tanggal);
         const start = new Date(startDate);
         const end = new Date(endDate);
-        itemDate.setHours(0,0,0,0);
-        start.setHours(0,0,0,0);
-        end.setHours(0,0,0,0);
+        itemDate.setHours(0, 0, 0, 0);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(0, 0, 0, 0);
         return itemDate >= start && itemDate <= end;
     });
 
@@ -197,18 +197,18 @@ function updateChartRange() {
     const dataSales = JSON.parse(localStorage.getItem("laporan_penjualan")) || [];
     const labels = [];
     const dataValues = [];
-    
+
     for (let i = range - 1; i >= 0; i--) {
         const d = new Date();
         d.setDate(d.getDate() - i);
         // Format DD/MM/YYYY untuk mencocokkan dengan data
-        const labelDate = d.toLocaleDateString('id-ID'); 
+        const labelDate = d.toLocaleDateString('id-ID');
         labels.push(labelDate);
-        
+
         const totalHariIni = dataSales
             .filter(s => s.tanggal.startsWith(labelDate))
             .reduce((sum, s) => sum + s.hargaJual, 0);
-            
+
         dataValues.push(totalHariIni);
     }
     initChart(labels, dataValues);

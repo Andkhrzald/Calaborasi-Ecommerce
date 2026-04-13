@@ -239,8 +239,37 @@ function updateOrderStatusLink() {
   }
 }
 
+function showAlertModal(title, message, icon = '⚠️') {
+  const modal = document.getElementById('alertModal');
+  const overlay = document.getElementById('alertModalOverlay');
+  const titleEl = document.getElementById('alertTitle');
+  const messageEl = document.getElementById('alertMessage');
+  const iconEl = document.getElementById('alertIcon');
+
+  titleEl.textContent = title;
+  messageEl.textContent = message;
+  iconEl.textContent = icon;
+
+  modal.classList.add('show');
+  overlay.classList.add('show');
+}
+
+function closeAlertModal() {
+  const modal = document.getElementById('alertModal');
+  const overlay = document.getElementById('alertModalOverlay');
+  modal.classList.remove('show');
+  overlay.classList.remove('show');
+}
+
 function checkout() {
-  if (cart.length === 0) return alert("Keranjang kosong!")
+  if (cart.length === 0) {
+    showAlertModal(
+      '🛒 Keranjang Kosong!',
+      'Silakan tambahkan produk ke keranjang sebelum melanjutkan ke checkout.',
+      '📦'
+    );
+    return;
+  }
 
   // Langsung ke halaman checkout customer.
   window.location.href = 'checkout.html';

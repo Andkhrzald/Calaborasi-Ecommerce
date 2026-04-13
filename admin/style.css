@@ -15,44 +15,54 @@ body {
 
 /* Container Utama Modal */
 .modal {
-    display: none; 
-    position: fixed; 
-    z-index: 9999; 
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* Latar belakang gelap */
-    backdrop-filter: blur(4px); /* Efek blur estetik */
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  /* Latar belakang gelap */
+  backdrop-filter: blur(4px);
+  /* Efek blur estetik */
 }
 
 /* Kotak Konten Modal */
 .modal-content {
-    background-color: #fff;
-    margin: auto;
-    padding: 25px;
-    border-radius: 15px;
-    width: 90%;
-    max-width: 450px;
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%); /* Tepat di tengah vertikal */
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    animation: slideDown 0.3s ease-out;
+  background-color: #fff;
+  margin: auto;
+  padding: 25px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 450px;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  /* Tepat di tengah vertikal */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  animation: slideDown 0.3s ease-out;
 }
 
 @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-60%); }
-    to { opacity: 1; transform: translateY(-50%); }
+  from {
+    opacity: 0;
+    transform: translateY(-60%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(-50%);
+  }
 }
 
 .close-btn {
-    position: absolute;
-    right: 20px;
-    top: 15px;
-    font-size: 24px;
-    cursor: pointer;
-    color: #999;
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
 }
 
 /* Sidebar Styling */
@@ -208,126 +218,138 @@ td {
 /* Tambahkan di admin/style.css */
 /* Pastikan container utama bersih */
 .sidebar nav ul {
-    list-style: none;
-    margin: 20px 0 0 0;
-    padding: 0 15px; /* Memberi ruang di sisi kanan-kiri menu */
+  list-style: none;
+  margin: 20px 0 0 0;
+  padding: 0 15px;
+  /* Memberi ruang di sisi kanan-kiri menu */
 }
 
 .sidebar nav ul li {
-    margin-bottom: 8px; /* Jarak antar kotak menu */
-    padding: 0;         /* Padding di li dinolkan agar tidak double */
-    border-radius: 8px;
-    transition: 0.3s;
-    margin-bottom: 5px;
+  margin-bottom: 8px;
+  /* Jarak antar kotak menu */
+  padding: 0;
+  /* Padding di li dinolkan agar tidak double */
+  border-radius: 8px;
+  transition: 0.3s;
+  margin-bottom: 5px;
 }
 
 .sidebar nav ul li {
-    margin-bottom: 8px;
-    color: #e8f5e9;
-    border-color: #ccc;
-    border:12px solid transparent; 
-    border-radius: 8px;
-    transition: all 0.3s ease;
+  margin-bottom: 8px;
+  color: #e8f5e9;
+  border-color: #ccc;
+  border: 12px solid transparent;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
 .sidebar nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 0.9rem;
-    display: block;
-    padding: 10px 15px;
-    width: 100%;
-    box-sizing: border-box;
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: block;
+  padding: 10px 15px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Saat Hover & Active */
-.sidebar nav ul li:hover, 
+.sidebar nav ul li:hover,
 .sidebar nav ul li.active {
-    background: #f4ffcd;
-    /* Jika ingin bordernya tetap transparan saat hover, biarkan saja. 
+  background: #f4ffcd;
+  /* Jika ingin bordernya tetap transparan saat hover, biarkan saja. 
        Atau jika ingin sedikit terlihat bayangan, bisa tambahkan border-color gelap tipis */
-    border-color: transparent; 
+  border-color: transparent;
 }
 
-.sidebar nav ul li:hover a, 
+.sidebar nav ul li:hover a,
 .sidebar nav ul li.active a {
-    color: #576879;
+  color: #576879;
 }
+
 /* Supaya teks berubah warna gelap saat background terang (hover) */
 
 .stat-card {
-    background: #10b981;
-    color: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
+  background: #10b981;
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
 }
 
 /* Tambahkan atau pastikan bagian ini ada di style.css */
 .menu-item {
-    transition: 0.3s;
-    color: #363636;
-    display: flex;
-    align-items: center;
+  transition: 0.3s;
+  color: #363636;
+  display: flex;
+  align-items: center;
 }
 
 .menu-item:hover {
-    background: #f2ffdb;
-    color: #b6a4f7;
+  background: #f2ffdb;
+  color: #b6a4f7;
 }
 
 .stat-card h1 {
-    font-size: 2.5rem;
-    font-weight: 800;
+  font-size: 2.5rem;
+  font-weight: 800;
 }
 
-     .menu-item {
-        padding: 12px;
-        cursor: pointer;
-        border-radius: 8px;
-        margin-bottom: 5px;
-        color: #ccc;
-        transition: 0.3s;
-      }
-      .menu-item:hover {
-        background: #f9ffdf;
-        color: rgb(157, 200, 255);
-      }
-      .content-page {
-        animation: fadeIn 0.3s;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-      }
-      th,
-      td {
-        padding: 12px;
-        border-bottom: 1px solid #eee;
-        text-align: left;
-      }
-      .btn-approve {
-        background: #10b981;
-        color: white;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-      .btn-reject {
-        background: #ef4444;
-        color: white;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 4px;
-        cursor: pointer;
-      }
+.menu-item {
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  color: #ccc;
+  transition: 0.3s;
+}
+
+.menu-item:hover {
+  background: #f9ffdf;
+  color: rgb(157, 200, 255);
+}
+
+.content-page {
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th,
+td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.btn-approve {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-reject {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
