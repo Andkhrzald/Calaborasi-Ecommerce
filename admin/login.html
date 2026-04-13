@@ -1,53 +1,24 @@
 <!doctype html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Login Crew - Elvoo</title>
-    <link rel="stylesheet" href="style1.css" />
-  </head>
-  <body>
-    <div class="box">
-      <h2>ELVOO ADMIN</h2>
-      <input type="text" id="user" placeholder="Username" autocomplete="off" />
-      <input
-        type="password"
-        id="pass"
-        placeholder="Password"
-        onkeypress="if (event.key === 'Enter') login();"
-      />
-      <button onclick="login()">LOGIN</button>
-    </div>
 
-    <script>
-      function login() {
-        const u = document.getElementById("user").value;
-        const p = document.getElementById("pass").value;
+<head>
+  <meta charset="UTF-8" />
+  <title>Login Admin - Elvoo</title>
+  <link rel="stylesheet" href="style1.css" />
+</head>
 
-        // Database user lokal
-        const database = [
-          { username: "ADMIN", pass: "123", role: "Owner" },
-          { username: "crew_stok", pass: "456", role: "Warehouse" },
-          { username: "crew_input", pass: "789", role: "Staff" },
-        ];
+<body>
+  <div class="box">
+    <h2>ELVOO ADMIN</h2>
+    <!-- Action diubah mengarah ke backend sesungguhnya (PHP) untuk diproses -->
+    <form action="login.php" method="POST" id="login-form">
+      <input type="text" name="user" id="user" placeholder="Username" autocomplete="off" required />
+      <input type="password" name="pass" id="pass" placeholder="Password" required />
+      <!-- Tombol submit standar form HTML -->
+      <button type="submit">LOGIN</button>
+    </form>
+  </div>
+  <script src="login.js"></script>
+</body>
 
-        const cek = database.find(
-          (item) => item.username === u && item.pass === p,
-        );
-
-        if (cek) {
-          // Menyimpan data user yang login ke session
-          sessionStorage.setItem("loggedInUser", JSON.stringify(cek));
-          // Diarahkan ke dashboard
-          window.location.href = "index.html";
-        } else {
-          alert("Username atau Password salah!");
-        }
-      }
-
-      // Cek jika sudah login, langsung lempar ke index
-      if (sessionStorage.getItem("loggedInUser")) {
-        window.location.href = "index.html";
-      }
-    </script>
-  </body>
 </html>

@@ -1,5 +1,6 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
+<<<<<<< HEAD
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -39,8 +40,37 @@
         </ul>
       </nav>
       <button onclick="logout()" class="btn-logout">LOGOUT</button>
-    </div>
+=======
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elvoo Admin - Modern Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="auth_check.js"></script>
+</head>
+
+
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <h2>ELVOO</h2>
+      <small>Sales Management</small>
+>>>>>>> Rizaldi
+    </div>
+    <nav>
+      <ul>
+        <li onclick="changePage('inventory')" id="menu-inv" class="menu-item active">📦 Inventory</li>
+        <li onclick="changePage('orders')" id="menu-orders" class="menu-item">🔔 Pesanan Masuk</li>
+        <li onclick="changePage('sales')" id="menu-sales" class="menu-item">📈 Penghasilan</li>
+        <li onclick="changePage('website')" id="menu-web" class="menu-item">🌐 Website</li>
+      </ul>
+    </nav>
+    <button onclick="logout()" class="btn-logout">Log Out</button>
+  </div>
+
+<<<<<<< HEAD
     <div class="main">
       <div id="page-overview" class="content-page">
         <div class="dashboard-grid">
@@ -85,24 +115,35 @@
               SIMPAN PRODUK
             </button>
           </div>
+=======
+  <div class="main">
+    <header class="main-header">
+      <div class="welcome">
+        <h2 id="welcome-msg">Welcome Back, Ali Husni 👋</h2>
+        <p>Monitor bisnis Elvoo kamu hari ini.</p>
+      </div>
+      <div class="user-info">
+        <div class="search-bar">
+          <input type="text" placeholder="Search anything..." />
+>>>>>>> Rizaldi
         </div>
-        <div class="card-table">
-          <h3>Daftar Barang</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Gambar</th>
-                <th>Produk</th>
-                <th>Harga</th>
-                <th>Stok</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="tabel-body"></tbody>
-          </table>
+        <img src="https://ui-avatars.com/api/?name=Ali+Husni&background=4f46e5&color=fff" alt="Avatar" class="avatar" />
+      </div>
+    </header>
+
+    <div id="page-inventory" class="content-page">
+      <div class="card form">
+        <h3>Tambah Produk Baru</h3>
+        <div class="grid-in">
+          <input type="text" id="nama" placeholder="Nama Produk" />
+          <input type="number" id="harga" placeholder="Harga (Rp)" />
+          <input type="number" id="stok" placeholder="Stok" />
+          <input type="text" id="gambar" placeholder="URL Gambar (Link/File)" />
+          <button class="btn-add" onclick="tambahProduk()">SIMPAN PRODUK</button>
         </div>
       </div>
 
+<<<<<<< HEAD
       <div id="page-orders" class="content-page" style="display: none">
         <div class="card-table">
           <h3>🔔 Antrean Pesanan</h3>
@@ -173,10 +214,97 @@
           <button onclick="hapusProdukModal()" class="btn-delete-modal">
             Hapus Produk
           </button>
-        </div>
+=======
+      <div class="card card-table">
+        <h3>Daftar Barang</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Gambar</th>
+              <th>Produk</th>
+              <th>Harga</th>
+              <th>Stok</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabel-body">
+          </tbody>
+        </table>
       </div>
     </div>
 
+    <div id="page-orders" class="content-page" style="display: none">
+      <div class="card card-table">
+        <h3>🔔 Pesanan Masuk (Butuh Persetujuan)</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Waktu</th>
+              <th>Produk</th>
+              <th>Nominal</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tabel-order-approval"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="page-sales" class="content-page" style="display: none">
+      <div class="stats-grid">
+        <div class="card stat-item">
+          <small>Revenue</small>
+          <h2 id="total-duit">Rp 0</h2>
+          <span class="trend-up">+12.5%</span>
+        </div>
+        <div class="card stat-item">
+          <small>Orders</small>
+          <h2>1.234</h2>
+          <span class="trend-up">+5.2%</span>
+        </div>
+        <div class="card stat-item">
+          <small>Customers</small>
+          <h2>856</h2>
+          <span class="trend-down">-2.1%</span>
+>>>>>>> Rizaldi
+        </div>
+      </div>
+
+<<<<<<< HEAD
     <script src="script.js"></script>
   </body>
 </html>
+=======
+      <div class="card chart-container">
+        <div class="chart-header">
+          <h3>Sales Analytics</h3>
+          <select id="chart-range" onchange="updateChart()">
+            <option value="7">Last 7 Days</option>
+            <option value="30">Last Month</option>
+          </select>
+        </div>
+        <canvas id="salesChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-edit" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h3>Edit Produk</h3>
+      <div class="modal-body">
+        <input type="text" id="modal-nama" placeholder="Nama" />
+        <input type="number" id="modal-harga" placeholder="Harga" />
+        <input type="number" id="modal-stok" placeholder="Stok" />
+        <input type="hidden" id="modal-index" />
+        <button class="btn-save-modal" onclick="simpanPerubahanModal()">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
+>>>>>>> Rizaldi
