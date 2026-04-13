@@ -247,3 +247,36 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 480px) {
+  .status-hero {
+    padding: 2rem 1rem 1.5rem;
+  }
+
+  .status-hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .tracking-card header {
+    padding: 1.5rem 1rem 1rem;
+  }
+
+  .tracking-card header .cta-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tracking-grid {
+    padding: 1rem 1rem 1rem;
+  }
+
+  .step {
+    padding-left: 2.8rem;
+  }
+
+  .step-marker {
+    left: 0.35rem;
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+}
