@@ -25,9 +25,139 @@ async function loadCart() {
     total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
     renderOrderSummary();
   } else {
-    alert('Keranjang kosong. Kembali ke halaman utama.');
-    window.location.href = 'index.html';
+    showEmptyCartMessage();
   }
+}
+
+function showEmptyCartMessage() {
+  // Create overlay backdrop
+  const overlay = document.createElement('div');
+  overlay.id = 'empty-cart-overlay';
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease-in-out;
+  `;
+
+  // Create modal content
+  overlay.innerHTML = `
+    <style>
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .empty-cart-modal {
+        background: #fff;
+        border-radius: 20px;
+        padding: 2.5rem;
+        max-width: 450px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        position: relative;
+        animation: slideUp 0.4s ease-out;
+      }
+      .empty-cart-modal .close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #9ca3af;
+        transition: color 0.2s;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .empty-cart-modal .close-btn:hover {
+        color: #374151;
+      }
+      .empty-cart-modal .icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        display: block;
+      }
+      .empty-cart-modal h2 {
+        margin: 0 0 0.75rem;
+        color: #1f2937;
+        font-size: 1.75rem;
+        font-weight: 700;
+      }
+      .empty-cart-modal p {
+        margin: 0 0 2rem;
+        color: #6b7280;
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+      .empty-cart-modal .actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+      }
+      .empty-cart-modal .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 999px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 1rem;
+      }
+      .empty-cart-modal .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
+      }
+      .empty-cart-modal .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+      }
+      .empty-cart-modal .btn-secondary {
+        background: #e5e7eb;
+        color: #374151;
+      }
+      .empty-cart-modal .btn-secondary:hover {
+        background: #d1d5db;
+      }
+    </style>
+
+    <div class="empty-cart-modal">
+      <button class="close-btn" onclick="document.getElementById('empty-cart-overlay').remove()">✕</button>
+      <span class="icon">🛒</span>
+      <h2>Keranjang Kosong</h2>
+      <p>Belum ada produk di keranjang Anda.<br>Mari mulai berbelanja dan temukan produk favorit Anda!</p>
+      <div class="actions">
+        <a href="website.html" class="btn btn-primary">Mulai Belanja</a>
+        <button class="btn btn-secondary" onclick="document.getElementById('empty-cart-overlay').remove()">Tutup</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
 }
 
 function renderOrderSummary() {
