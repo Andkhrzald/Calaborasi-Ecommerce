@@ -1,245 +1,152 @@
-// --- 1. CONFIG & AUTH ---
-const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
-if (!user) window.location.href = "login.html";
+// --- DATABASE ACCESS ---
+function getData(key) {
+    try {
+        return JSON.parse(localStorage.getItem(key)) || [];
+    } catch (e) {
+        console.error("Gagal ambil data:", key);
+        return [];
+    }
+}
 
-document.getElementById("user-display").innerText = user.username;
-document.getElementById("role-display").innerText = "Jabatan: " + (user.role || "Admin");
+function saveData(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
+}
 
-const getProduk = () => JSON.parse(localStorage.getItem("produk_clothing")) || [];
-let myChart = null;
+let charts = {};
 
-// --- 2. NAVIGASI ---
+// --- NAVIGASI ---
 function changePage(pageName) {
+    // Sembunyikan semua page & matikan menu aktif
     document.querySelectorAll('.content-page').forEach(p => p.style.display = 'none');
-    const target = document.getElementById('page-' + pageName);
-    if (target) target.style.display = 'block';
+    document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
     
+    // Aktifkan page yang diklik
+    const activePage = document.getElementById('page-' + pageName);
+    if (activePage) activePage.style.display = 'block';
+    
+    const activeMenu = document.getElementById('menu-' + pageName);
+    if (activeMenu) activeMenu.classList.add('active');
+    
+    // Refresh data per halaman
+    if (pageName === 'overview') renderOverview();
     if (pageName === 'inventory') renderInventory();
     if (pageName === 'orders') renderOrders();
-    if (pageName === 'sales') {
-        renderPenjualan();
-        updateChartRange();
-        updateBestSeller();
-    }
+    if (pageName === 'sales') renderSalesPage();
 }
 
-// --- 3. INVENTORY LOGIC ---
-function renderInventory() {
-    const tbody = document.getElementById("tabel-body");
-    tbody.innerHTML = getProduk().map((p, i) => `
-        <tr>
-            <td><img src="../assets/img/${p.gambar}" width="40" height="40" style="object-fit:cover; border-radius:4px;"></td>
-            <td>${p.nama}</td>
-            <td>Rp ${parseInt(p.harga).toLocaleString()}</td>
-            <td>${p.stok} Pcs</td>
-            <td><button onclick="openModal(${i})">⚙️ Edit</button></td>
-        </tr>
-    `).join("");
-}
-
+// --- FITUR TAMBAH PRODUK ---
 function tambahProduk() {
-    const n = document.getElementById("nama").value, 
-          h = document.getElementById("harga").value, 
-          s = document.getElementById("stok").value, 
-          g = document.getElementById("gambar").value;
-    if (n && h && s && g) {
-        let data = getProduk();
-        data.push({ id: Date.now(), nama: n, harga: parseInt(h), stok: parseInt(s), gambar: g });
-        localStorage.setItem("produk_clothing", JSON.stringify(data));
-        renderInventory();
-        alert("Produk Berhasil Disimpan!");
-        ["nama","harga","stok","gambar"].forEach(id => document.getElementById(id).value = "");
-    }
-}
+    const nama = document.getElementById("nama").value;
+    const harga = document.getElementById("harga").value;
+    const stok = document.getElementById("stok").value;
+    const gambar = document.getElementById("gambar").value;
 
-// --- 4. ORDER LOGIC ---
-function renderOrders() {
-    const antrean = JSON.parse(localStorage.getItem("antrean_pesanan")) || [];
-    const tbody = document.getElementById("tabel-order-approval");
-    tbody.innerHTML = antrean.map((item, index) => `
-        <tr>
-            <td><small>${item.tanggal}</small></td>
-            <td><strong>${item.namaProduk}</strong></td>
-            <td>Rp ${item.hargaJual.toLocaleString()}</td>
-            <td>
-                <button onclick="approveOrder(${index})" style="background:#10b981; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Approve</button>
-                <button onclick="rejectOrder(${index})" style="background:#ef4444; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Reject</button>
-            </td>
-        </tr>
-    `).join("");
-}
-
-function approveOrder(index) {
-    let antrean = JSON.parse(localStorage.getItem("antrean_pesanan")) || [];
-    let penghasilan = JSON.parse(localStorage.getItem("laporan_penjualan")) || [];
-    penghasilan.push(antrean[index]);
-    localStorage.setItem("laporan_penjualan", JSON.stringify(penghasilan));
-    antrean.splice(index, 1);
-    localStorage.setItem("antrean_pesanan", JSON.stringify(antrean));
-    renderOrders();
-}
-
-function rejectOrder(index) {
-    if(confirm("Tolak pesanan ini?")) {
-        let antrean = JSON.parse(localStorage.getItem("antrean_pesanan")) || [];
-        antrean.splice(index, 1);
-        localStorage.setItem("antrean_pesanan", JSON.stringify(antrean));
-        renderOrders();
-    }
-}
-
-// --- 5. SALES & BEST SELLER LOGIC ---
-function parseDate(dateStr) {
-    const parts = dateStr.split(',')[0].split('/');
-    return new Date(parts[2], parts[1] - 1, parts[0]);
-}
-
-function renderPenjualan() {
-    // ... (kode filter tetap sama seperti sebelumnya)
-    
-    tbody.innerHTML = filteredData.map((s, idx) => {
-        total += s.hargaJual;
-        
-        // Mengubah format (x2) menjadi +2 Produk di tampilan tabel
-        let displayProduk = s.namaProduk.replace(/\(x(\d+)\)/g, "+$1 Produk");
-
-        return `<tr>
-            <td><small>${s.tanggal}</small></td>
-            <td>${displayProduk}</td> <td>Rp ${s.hargaJual.toLocaleString()}</td>
-            <td>
-                <button onclick="bukaDetailSales(${idx})" style="background:#007bff; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:11px;">👁️ Detail</button>
-                <button onclick="hapusRiwayat(${idx})" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:11px;">🗑️ Hapus</button>
-            </td>
-        </tr>`;
-    }).reverse().join("");
-
-    totalDisplay.innerText = `Rp ${total.toLocaleString()}`;
-}
-
-function updateBestSeller() {
-    const dataSales = JSON.parse(localStorage.getItem("laporan_penjualan")) || [];
-    const container = document.getElementById("best-seller-container");
-    if (!container) return;
-
-    if (dataSales.length === 0) {
-        container.innerHTML = "<p style='color:#888;'>Belum ada data.</p>";
+    if (!nama || !harga || !stok) {
+        alert("Nama, Harga, dan Stok wajib diisi!");
         return;
     }
 
-    const counts = {};
-    dataSales.forEach(s => {
-        if (s.namaProduk) {
-            const items = s.namaProduk.split(",");
-            items.forEach(item => {
-                // Membersihkan nama dari (x1), (x2) dsb
-                let cleanName = item.replace(/\s*\(\s*x\d+\s*\)\s*/gi, "").trim();
-                if (cleanName) counts[cleanName] = (counts[cleanName] || 0) + 1;
-            });
-        }
+    let pList = getData("produk_clothing");
+    pList.push({
+        id: Date.now(),
+        nama: nama,
+        harga: parseInt(harga),
+        stok: parseInt(stok),
+        gambar: gambar || 'https://via.placeholder.com/150'
     });
 
-    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 3);
-    container.innerHTML = sorted.map(([n, j], i) => `
-        <div style="flex:1; min-width:140px; background:#f8fafc; padding:15px; border-radius:8px; border-left:4px solid #007bff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            <span style="font-size:1.2rem;">${i==0?'🥇':i==1?'🥈':'🥉'}</span>
-            <div style="font-weight:bold; color:#1e293b; margin-top:5px;">${n}</div>
-            <small style="color:#64748b;">${j} Produk Terjual</small> </div>
+    saveData("produk_clothing", pList);
+    
+    // Kosongkan Form
+    document.getElementById("nama").value = "";
+    document.getElementById("harga").value = "";
+    document.getElementById("stok").value = "";
+    document.getElementById("gambar").value = "";
+
+    renderInventory();
+    alert("Produk berhasil masuk!");
+}
+
+// --- RENDER INVENTORY ---
+function renderInventory() {
+    const tbody = document.getElementById("tabel-body");
+    const data = getData("produk_clothing");
+    
+    tbody.innerHTML = data.map((p, i) => `
+        <tr>
+            <td><img src="${p.gambar}" width="40" height="40" style="border-radius:5px; object-fit:cover;"></td>
+            <td>${p.nama}</td>
+            <td>Rp ${p.harga.toLocaleString()}</td>
+            <td>${p.stok}</td>
+            <td><button onclick="openModal(${i})" style="color:#10b981; cursor:pointer; background:none; border:1px solid #10b981; padding:5px 10px; border-radius:5px;">Edit</button></td>
+        </tr>
     `).join("");
 }
 
-    const counts = {};
-    dataSales.forEach(s => {
-        if (s.namaProduk) {
-            const items = s.namaProduk.split(",");
-            items.forEach(item => {
-                let cleanName = item.replace(/\s*\(\s*x\d+\s*\)\s*/gi, "").trim();
-                if (cleanName) counts[cleanName] = (counts[cleanName] || 0) + 1;
-            });
-        }
-    });
+// --- RENDER OVERVIEW ---
+function renderOverview() {
+    const sales = getData("laporan_penjualan");
+    const produk = getData("produk_clothing");
+    const orders = getData("antrean_pesanan");
 
-    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 3);
-    container.innerHTML = sorted.map(([n, j], i) => `
-        <div style="flex:1; min-width:140px; background:#f8fafc; padding:15px; border-radius:8px; border-left:4px solid #007bff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            <span style="font-size:1.2rem;">${i==0?'🥇':i==1?'🥈':'🥉'}</span>
-            <div style="font-weight:bold; color:#1e293b; margin-top:5px;">${n}</div>
-            <small style="color:#64748b;">Terjual ${j}x</small>
-        </div>
-    `).join("");
+    document.getElementById("ov-total-omset").innerText = `Rp ${sales.reduce((a,b) => a + (b.hargaJual || 0), 0).toLocaleString()}`;
+    document.getElementById("ov-stok-low").innerText = produk.filter(p => p.stok < 5).length;
+    document.getElementById("ov-pending").innerText = orders.length;
 
-
-function bukaDetailSales(idx) {
-    const dataSales = JSON.parse(localStorage.getItem("laporan_penjualan")) || [];
-    const realData = [...dataSales].reverse()[idx]; 
-    if(!realData) return;
-
-    const container = document.getElementById("isi-detail-sales");
-    const totalContainer = document.getElementById("total-detail-sales");
-
-    const items = realData.namaProduk.split(",");
-    let html = "";
-    items.forEach(item => {
-        const nama = item.split("(")[0].trim();
-        const qty = item.match(/\(x(\d+)\)/) ? item.match(/\(x(\d+)\)/)[1] : "1";
-        
-        html += `
-            <div style="display:flex; justify-content:space-between; margin-bottom:8px; border-bottom: 1px dashed #eee; padding-bottom: 5px;">
-                <span style="color:#475569;">${nama}</span>
-                <span style="color:#1e293b; font-weight: bold;">${qty} Produk</span> </div>`;
-    });
-
-    container.innerHTML = html;
-    totalContainer.innerHTML = `Total: Rp ${realData.hargaJual.toLocaleString()}`;
-    document.getElementById("modal-detail-sales").style.display = "block";
-}
-function hapusRiwayat(idx) {
-    if (confirm("Hapus transaksi ini dari riwayat?")) {
-        let dataSales = JSON.parse(localStorage.getItem("laporan_penjualan")) || [];
-        const reversedIdx = dataSales.length - 1 - idx;
-        dataSales.splice(reversedIdx, 1);
-        localStorage.setItem("laporan_penjualan", JSON.stringify(dataSales));
-        renderPenjualan();
-        updateBestSeller();
-        updateChartRange();
+    // Chart Trend 7 Hari
+    const labels = []; const values = [];
+    for(let i=6; i>=0; i--) {
+        const d = new Date(); d.setDate(d.getDate()-i);
+        const t = d.toLocaleDateString('id-ID');
+        labels.push(t);
+        values.push(sales.filter(s => s.tanggal && s.tanggal.startsWith(t)).reduce((a,b) => a + (b.hargaJual || 0), 0));
     }
+    renderChart('salesChartOverview', 'line', labels, values, '#10b981');
 }
 
-function updateChartRange() {
-    const range = parseInt(document.getElementById('chart-range').value);
-    const dataSales = JSON.parse(localStorage.getItem("laporan_penjualan")) || [];
-    const labels = []; const dataValues = [];
-    for (let i = range - 1; i >= 0; i--) {
-        const d = new Date(); d.setDate(d.getDate() - i);
-        const labelDate = d.toLocaleDateString('id-ID'); 
-        labels.push(labelDate);
-        const total = dataSales.filter(s => s.tanggal.startsWith(labelDate)).reduce((sum, s) => sum + s.hargaJual, 0);
-        dataValues.push(total);
+// --- PENGHASILAN ---
+function renderSalesPage() {
+    const allSales = getData("laporan_penjualan");
+    const start = document.getElementById("filter-start").value;
+    const end = document.getElementById("filter-end").value;
+
+    let filtered = allSales;
+    if (start && end) {
+        filtered = allSales.filter(s => {
+            if(!s.tanggal) return false;
+            const parts = s.tanggal.split(',')[0].split('/');
+            const saleDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+            return saleDate >= start && saleDate <= end;
+        });
     }
-    initChart(labels, dataValues);
+
+    document.getElementById("sales-period-total").innerText = `Rp ${filtered.reduce((a, b) => a + (b.hargaJual || 0), 0).toLocaleString()}`;
+    
+    document.getElementById("tabel-terjual").innerHTML = filtered.map(s => `
+        <tr><td>${s.tanggal}</td><td>${s.namaProduk}</td><td>Rp ${s.hargaJual.toLocaleString()}</td><td>Selesai</td></tr>
+    `).reverse().join("");
+
+    const daily = {};
+    filtered.forEach(s => { const t = s.tanggal.split(',')[0]; daily[t] = (daily[t] || 0) + s.hargaJual; });
+    renderChart('detailedSalesChart', 'bar', Object.keys(daily), Object.values(daily), '#10b981');
 }
 
-function initChart(l, v) {
-    const ctx = document.getElementById('salesChart').getContext('2d');
-    if (myChart) myChart.destroy();
-    myChart = new Chart(ctx, {
-        type: 'line',
-        data: { labels: l, datasets: [{ label: 'Rp', data: v, borderColor: '#007bff', backgroundColor: 'rgba(0,123,255,0.1)', fill: true, tension: 0.4 }] },
-        options: { responsive: true, maintainAspectRatio: false }
+// --- UNIVERSAL CHART ---
+function renderChart(id, type, labels, data, color) {
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+    if (charts[id]) charts[id].destroy();
+    
+    charts[id] = new Chart(canvas.getContext('2d'), {
+        type: type,
+        data: { labels, datasets: [{ data, borderColor: color, backgroundColor: color + '22', fill: true, tension: 0.4 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
 }
 
-function resetFilter() {
-    document.getElementById("filter-start").value = "";
-    document.getElementById("filter-end").value = "";
-    renderPenjualan();
-}
-
-function logout() { sessionStorage.clear(); window.location.href = "login.html"; }
-function closeModalDetail() { document.getElementById("modal-detail-sales").style.display = "none"; }
-
-// --- 6. MODAL INVENTORY LOGIC ---
+// --- MODAL ---
 function openModal(i) {
-    const p = getProduk()[i];
+    const p = getData("produk_clothing")[i];
     document.getElementById("modal-nama").value = p.nama;
     document.getElementById("modal-harga").value = p.harga;
     document.getElementById("modal-stok").value = p.stok;
@@ -247,30 +154,12 @@ function openModal(i) {
     document.getElementById("modal-index").value = i;
     document.getElementById("modal-edit").style.display = "block";
 }
+
 function closeModal() { document.getElementById("modal-edit").style.display = "none"; }
 
-function simpanPerubahanModal() {
-    const i = document.getElementById("modal-index").value;
-    let data = getProduk();
-    data[i] = { 
-        ...data[i], 
-        nama: document.getElementById("modal-nama").value,
-        harga: parseInt(document.getElementById("modal-harga").value),
-        stok: parseInt(document.getElementById("modal-stok").value),
-        gambar: document.getElementById("modal-gambar").value
-    };
-    localStorage.setItem("produk_clothing", JSON.stringify(data));
-    renderInventory(); closeModal();
-}
+function logout() { sessionStorage.clear(); window.location.href = "login.html"; }
 
-function hapusProdukModal() {
-    if(confirm("Hapus produk?")) {
-        let data = getProduk();
-        data.splice(document.getElementById("modal-index").value, 1);
-        localStorage.setItem("produk_clothing", JSON.stringify(data));
-        renderInventory(); closeModal();
-    }
-}
-
-// Init Halaman Awal
-changePage('inventory');
+// --- INIT ---
+window.onload = () => {
+    changePage('overview');
+};

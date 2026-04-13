@@ -3,52 +3,84 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard Admin - Elvoo</title>
+    <title>Elvoo Executive Admin</title>
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <div class="sidebar">
-      <h2>ELVOO ADMIN</h2>
-      <div style="margin-bottom: 20px; padding: 0 10px">
-        <p
-          id="user-display"
-          style="font-weight: bold; color: white; margin: 0"
-        ></p>
-        <small id="role-display" style="color: #888"></small>
+      <h2>ELVOO</h2>
+      <div class="user-profile">
+        <p id="user-display">Admin</p>
+        <small>Executive Mode</small>
       </div>
       <nav>
-        <ul style="list-style: none; padding: 0">
-          <li onclick="changePage('inventory')" id="menu-inv" class="menu-item">
-            Inventory
+        <ul>
+          <li
+            onclick="changePage('overview')"
+            id="menu-overview"
+            class="menu-item active"
+          >
+            📊 Overview
+          </li>
+          <li
+            onclick="changePage('inventory')"
+            id="menu-inventory"
+            class="menu-item"
+          >
+            📦 Inventory
           </li>
           <li onclick="changePage('orders')" id="menu-orders" class="menu-item">
-            Pesanan Masuk
+            🔔 Pesanan Masuk
           </li>
           <li onclick="changePage('sales')" id="menu-sales" class="menu-item">
-            Penghasilan
-          </li>
-          <li onclick="changePage('website')" id="menu-web" class="menu-item">
-            Website
+            📈 Penghasilan
           </li>
         </ul>
       </nav>
-      <button onclick="logout()" class="btn-logout">Logout</button>
+      <button onclick="logout()" class="btn-logout">LOGOUT</button>
     </div>
 
     <div class="main">
-      <div id="page-inventory" class="content-page">
-        <div class="form" id="input-area">
+      <div id="page-overview" class="content-page">
+        <div class="dashboard-grid">
+          <div class="stats-card">
+            <small>Total Omset</small>
+            <h1 id="ov-total-omset">Rp 0</h1>
+          </div>
+          <div class="stats-card status-alert">
+            <small>Stok Menipis (< 5)</small>
+            <h2 id="ov-stok-low">0</h2>
+          </div>
+          <div class="stats-card status-info">
+            <small>Pesanan Antre</small>
+            <h2 id="ov-pending">0</h2>
+          </div>
+        </div>
+        <div class="chart-container-flex">
+          <div class="card-table chart-box">
+            <h4>📈 Tren Pendapatan</h4>
+            <div style="height: 250px">
+              <canvas id="salesChartOverview"></canvas>
+            </div>
+          </div>
+          <div class="card-table chart-box">
+            <h4>🔥 Produk Terlaris</h4>
+            <div style="height: 250px">
+              <canvas id="bestSellerChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="page-inventory" class="content-page" style="display: none">
+        <div class="form">
           <h3>Tambah Produk Baru</h3>
           <div class="grid-in">
             <input type="text" id="nama" placeholder="Nama Produk" />
             <input type="number" id="harga" placeholder="Harga" />
             <input type="number" id="stok" placeholder="Stok" />
-            <input
-              type="text"
-              id="gambar"
-              placeholder="File Gambar (ex: baju.jpg)"
-            />
+            <input type="text" id="gambar" placeholder="Link Gambar (URL)" />
             <button class="btn-add" onclick="tambahProduk()">
               SIMPAN PRODUK
             </button>
@@ -73,14 +105,14 @@
 
       <div id="page-orders" class="content-page" style="display: none">
         <div class="card-table">
-          <h3>🔔 Pesanan Masuk (Butuh Persetujuan)</h3>
+          <h3>🔔 Antrean Pesanan</h3>
           <table>
             <thead>
               <tr>
-                <th>WAKTU</th>
-                <th>PRODUK</th>
-                <th>NOMINAL</th>
-                <th>AKSI</th>
+                <th>Waktu</th>
+                <th>Produk</th>
+                <th>Nominal</th>
+                <th>Aksi</th>
               </tr>
             </thead>
             <tbody id="tabel-order-approval"></tbody>
@@ -89,147 +121,37 @@
       </div>
 
       <div id="page-sales" class="content-page" style="display: none">
-        <div
-          class="stats-card"
-          style="
-            margin-bottom: 20px;
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            text-align: center;
-          "
-        >
-          <small style="color: #666; text-transform: uppercase"
-            >Total Penghasilan (Sesuai Filter)</small
-          >
-          <h1
-            id="total-duit"
-            style="font-size: 3rem; margin: 10px 0 0 0; color: #10b981"
-          >
+        <div class="card-table">
+          <div class="header-flex">
+            <h4>📈 Laporan Penghasilan</h4>
+            <div class="date-filter">
+              <input type="date" id="filter-start" />
+              <span>s/d</span>
+              <input type="date" id="filter-end" />
+              <button onclick="renderSalesPage()" class="btn-filter">
+                Cari Data
+              </button>
+            </div>
+          </div>
+          <h1 id="sales-period-total" style="color: #10b981; margin: 20px 0">
             Rp 0
           </h1>
-        </div>
-
-        <div
-          style="
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-          "
-        >
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              margin-bottom: 15px;
-            "
-          >
-            <h4 style="margin: 0">📈 Grafik Tren Penjualan</h4>
-            <select
-              id="chart-range"
-              onchange="updateChartRange()"
-              style="padding: 8px; border-radius: 4px; border: 1px solid #ddd"
-            >
-              <option value="3">3 Hari Terakhir</option>
-              <option value="5">5 Hari Terakhir</option>
-              <option value="7" selected>Seminggu Terakhir</option>
-              <option value="30">Sebulan Terakhir</option>
-            </select>
-          </div>
-          <div style="height: 250px"><canvas id="salesChart"></canvas></div>
-        </div>
-
-        <div
-          style="
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-          "
-        >
-          <h4 style="margin: 0 0 15px 0">🔥 Produk Terlaris (Best Seller)</h4>
-          <div
-            id="best-seller-container"
-            style="display: flex; gap: 15px; flex-wrap: wrap"
-          ></div>
-        </div>
-
-        <div
-          class="filter-container"
-          style="
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-          "
-        >
-          <h4>📅 Filter Jarak Waktu Manual</h4>
-          <div
-            style="
-              display: flex;
-              gap: 15px;
-              align-items: flex-end;
-              flex-wrap: wrap;
-              margin-top: 10px;
-            "
-          >
-            <input
-              type="date"
-              id="filter-start"
-              style="padding: 8px; border: 1px solid #ddd; border-radius: 4px"
-            />
-            <input
-              type="date"
-              id="filter-end"
-              style="padding: 8px; border: 1px solid #ddd; border-radius: 4px"
-            />
-            <button
-              onclick="renderPenjualan()"
-              style="
-                background: #007bff;
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 4px;
-                cursor: pointer;
-              "
-            >
-              Terapkan Filter
-            </button>
-            <button
-              onclick="resetFilter()"
-              style="
-                background: #6c757d;
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 4px;
-                cursor: pointer;
-              "
-            >
-              Reset
-            </button>
+          <div style="height: 280px">
+            <canvas id="detailedSalesChart"></canvas>
           </div>
         </div>
-
         <div class="card-table">
-          <h4 style="margin-bottom: 15px">📋 Daftar Transaksi Berhasil</h4>
+          <h4>📋 Riwayat Terjual</h4>
           <table>
             <thead>
               <tr>
                 <th>Tanggal</th>
                 <th>Produk</th>
-                <th>Nominal</th>
-                <th>Aksi</th>
+                <th>Harga</th>
+                <th>Status</th>
               </tr>
             </thead>
-            <tbody id="tabel-penjualan"></tbody>
+            <tbody id="tabel-terjual"></tbody>
           </table>
         </div>
       </div>
@@ -238,47 +160,20 @@
     <div id="modal-edit" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h3>Edit Produk</h3>
-        <div class="modal-body">
-          <input type="text" id="modal-nama" placeholder="Nama" />
-          <input type="number" id="modal-harga" placeholder="Harga" />
-          <input type="number" id="modal-stok" placeholder="Stok" />
-          <input type="text" id="modal-gambar" placeholder="Gambar" />
+        <h3>Update Produk</h3>
+        <div class="grid-in" style="margin-top: 20px">
+          <input type="text" id="modal-nama" />
+          <input type="number" id="modal-harga" />
+          <input type="number" id="modal-stok" />
+          <input type="text" id="modal-gambar" />
           <input type="hidden" id="modal-index" />
-          <button onclick="simpanPerubahanModal()">Simpan Perubahan</button>
-          <button
-            onclick="hapusProdukModal()"
-            style="background: red; color: white"
-          >
+          <button class="btn-add" onclick="simpanPerubahanModal()">
+            Update Data
+          </button>
+          <button onclick="hapusProdukModal()" class="btn-delete-modal">
             Hapus Produk
           </button>
         </div>
-      </div>
-    </div>
-
-    <div id="modal-detail-sales" class="modal">
-      <div class="modal-content" style="max-width: 400px; border-radius: 12px">
-        <span class="close-btn" onclick="closeModalDetail()">&times;</span>
-        <h3
-          style="
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-            color: #1e293b;
-          "
-        >
-          📄 Detail Transaksi
-        </h3>
-        <div id="isi-detail-sales" style="margin-top: 15px"></div>
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0" />
-        <div
-          id="total-detail-sales"
-          style="
-            font-weight: bold;
-            text-align: right;
-            color: #10b981;
-            font-size: 1.2rem;
-          "
-        ></div>
       </div>
     </div>
 
