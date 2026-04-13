@@ -3,73 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout - ADMyself Store</title>
+  <title>Secure Checkout - Calaborasi Store</title>
   <link rel="stylesheet" href="../assets/css/checkout.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<section class="hero checkout-hero">
-  <div class="hero-content">
-    <p class="eyebrow">Checkout</p>
-    <h1>Selesaikan Pembelian</h1>
-    <p>Isi informasi pengiriman dan konfirmasi pesanan Anda. Pastikan data yang dimasukkan benar untuk memudahkan proses pengiriman.</p>
+<header class="checkout-site-header">
+  <div class="checkout-header-container">
+    <a href="website.html" class="logo">Calaborasi Store</a>
+    <div class="secure-badge">
+      <svg width="14" height="18" viewBox="0 0 14 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 0C4.79543 0 3 1.79543 3 4V6H2C0.89543 6 0 6.89543 0 8V16C0 17.1046 0.89543 18 2 18H12C13.1046 18 14 17.1046 14 16V8C14 6.89543 13.1046 6 12 6H11V4C11 1.79543 9.20457 0 7 0ZM5 6V4C5 2.89543 5.89543 2 7 2C8.10457 2 9 2.89543 9 4V6H5ZM2 8H12V16H2V8ZM7 10.5C6.17157 10.5 5.5 11.1716 5.5 12C5.5 12.8284 6.17157 13.5 7 13.5C7.82843 13.5 8.5 12.8284 8.5 12C8.5 11.1716 7.82843 10.5 7 10.5Z" fill="#10B981"/>
+      </svg>
+      Secure Checkout
+    </div>
   </div>
-</section>
+</header>
 
-<main class="checkout-page">
-  <div class="checkout-card">
-    <header>
-      <a href="website.html" class="cancel-checkout">← Batal Checkout</a>
-      <h1>Checkout Pembayaran</h1>
-      <p>Periksa ringkasan pesanan dan lengkapi informasi pengiriman untuk menyelesaikan pembelian.
+<main class="checkout-layout">
+  <div class="checkout-layout-inner">
+    
+    <!-- LEFT COLUMN: Forms -->
+    <div class="checkout-main">
+      <nav class="breadcrumb">
+        <a href="website.html">Cart</a>
+        <span class="separator">›</span>
+        <span class="current">Information & Shipping</span>
+      </nav>
 
-      </p>
-    </header>
-
-    <div class="checkout-grid">
-      <div class="order-summary">
-        <h2>Ringkasan Pesanan</h2>
-        <div id="order-items">
-          <!-- Order items will be loaded here -->
-        </div>
-        <div class="checkout-total">
-          <h3>Total Pembayaran</h3>
-          <p>Rp <span id="checkout-total">0</span></p>
-        </div>
-      </div>
-
-      <div class="customer-form">
+      <section class="form-section">
         <h2>Informasi Pengiriman</h2>
         <form id="checkout-form">
-          <div class="form-group">
-            <label for="name">Nama Lengkap *</label>
-            <input type="text" id="name" required placeholder="Masukkan nama lengkap">
+          <div class="form-row">
+            <div class="form-group half">
+              <input type="text" id="name" required placeholder=" ">
+              <label for="name">Nama Lengkap</label>
+            </div>
+            <div class="form-group half">
+              <input type="tel" id="phone" required placeholder=" ">
+              <label for="phone">Nomor Telepon</label>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="email">Email *</label>
-            <input type="email" id="email" required placeholder="email@example.com">
+          <div class="form-group full">
+            <input type="email" id="email" required placeholder=" ">
+            <label for="email">Email</label>
           </div>
 
-          <div class="form-group">
-            <label for="phone">Nomor Telepon *</label>
-            <input type="tel" id="phone" required placeholder="08123456789">
+          <div class="form-group full">
+            <textarea id="address" rows="3" required placeholder=" "></textarea>
+            <label for="address">Alamat Lengkap (Jl, RT/RW, Kel, Kec, Kota)</label>
           </div>
 
-          <div class="form-group">
-            <label for="address">Alamat Lengkap *</label>
-            <textarea id="address" rows="3" required placeholder="Jl. Contoh No. 123, RT/RW 01/02, Kelurahan, Kecamatan, Kota, Kode Pos"></textarea>
-          </div>
-
-          <div class="form-group">
+          <div class="form-group full">
+            <input type="text" id="notes" placeholder=" ">
             <label for="notes">Catatan Tambahan (Opsional)</label>
-            <textarea id="notes" rows="2" placeholder="Warna, ukuran, atau instruksi khusus"></textarea>
           </div>
 
-          <button type="submit" class="place-order-btn">Buat Pesanan</button>
+          <div class="checkout-actions">
+            <a href="website.html" class="return-link">← Kembali ke Keranjang</a>
+            <button type="submit" class="place-order-btn">Bayar Sekarang</button>
+          </div>
         </form>
+      </section>
+    </div>
+
+    <!-- RIGHT COLUMN: Order Summary -->
+    <div class="checkout-sidebar">
+      <div class="summary-card">
+        <h2>Ringkasan Pesanan</h2>
+        
+        <div id="order-items" class="order-items-list">
+          <!-- Items will be injected via JS -->
+        </div>
+        
+        <div class="summary-totals">
+          <div class="subtotal-row">
+            <span>Subtotal</span>
+            <span id="subtotal-amount">Rp 0</span>
+          </div>
+          <div class="subtotal-row">
+            <span>Pengiriman</span>
+            <span class="free-shipping">Gratis</span>
+          </div>
+          <div class="total-row">
+            <span>Total Pembayaran</span>
+            <div class="total-price">
+              <span class="currency">IDR</span>
+              <span id="checkout-total">0</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
   </div>
 </main>
 

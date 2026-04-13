@@ -167,25 +167,29 @@ function renderOrderSummary() {
 
   cart.forEach(item => {
     const product = allProducts.find(p => p.name === item.name);
-    const image = product ? product.image : '';
+    const image = product && product.image ? product.image : 'https://via.placeholder.com/65x65?text=Img';
 
     const div = document.createElement('div');
     div.className = 'checkout-item';
-    div.style = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;";
     div.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 1rem;">
-        <img src="${image}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
-        <div>
-          <h4 style="margin: 0; font-size: 0.9rem;">${item.name}</h4>
-          <p style="margin: 0; color: #666; font-size: 0.8rem;">Rp ${formatRupiah(item.price)} x ${item.qty}</p>
-        </div>
+      <div class="item-img-wrapper">
+        <img src="${image}" alt="${item.name}">
+        <div class="item-qty-badge">${item.qty}</div>
       </div>
-      <div style="font-weight: 600; color: #007bff;">Rp ${formatRupiah(item.price * item.qty)}</div>
+      <div class="item-info">
+        <h4>${item.name}</h4>
+        <p>Rp ${formatRupiah(item.price)}</p>
+      </div>
+      <div class="item-price">Rp ${formatRupiah(item.price * item.qty)}</div>
     `;
     container.appendChild(div);
   });
 
-  document.getElementById('checkout-total').textContent = formatRupiah(total);
+  const subtotalEl = document.getElementById('subtotal-amount');
+  if (subtotalEl) subtotalEl.textContent = 'Rp ' + formatRupiah(total);
+
+  const totalEl = document.getElementById('checkout-total');
+  if (totalEl) totalEl.textContent = formatRupiah(total);
 }
 
 // PROSES SUBMIT FORM

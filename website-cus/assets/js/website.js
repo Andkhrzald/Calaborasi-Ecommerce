@@ -145,34 +145,49 @@ function updateCartUI() {
   const cartDrawerItemsEl = document.getElementById("cartDrawerItems");
   const cartCount = document.getElementById("cartCount");
   const cartBadge = document.getElementById("cartBadge");
+  const navCartBadge = document.getElementById("navCartBadge");
   const totalEl = document.getElementById("total");
   const totalDrawerEl = document.getElementById("totalDrawer");
 
-  cartEl.innerHTML = "";
-  cartDrawerItemsEl.innerHTML = "";
+  if (cartEl) cartEl.innerHTML = "";
+  if (cartDrawerItemsEl) cartDrawerItemsEl.innerHTML = "";
   const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-  cartCount.textContent = totalItems;
-  cartBadge.textContent = totalItems;
+  if (cartCount) cartCount.textContent = totalItems;
+  if (cartBadge) cartBadge.textContent = totalItems;
+  if (navCartBadge) navCartBadge.textContent = totalItems;
 
   total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  totalEl.textContent = formatRupiah(total);
-  totalDrawerEl.textContent = formatRupiah(total);
+  if (totalEl) totalEl.textContent = formatRupiah(total);
+  if (totalDrawerEl) totalDrawerEl.textContent = formatRupiah(total);
 
   if (cart.length === 0) {
-    cartEl.innerHTML = `
-      <div class="empty-cart">
-        <h4>Keranjang Anda masih kosong</h4>
-        <p>Tambahkan produk untuk mulai berbelanja. Total akan terlihat di sini setelah Anda memilih barang.</p>
+    const emptyHtml = `
+      <div class="empty-cart-view" style="text-align: center; padding: 4rem 1rem; color: #6b7280; display: flex; flex-direction: column; align-items: center;">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 1rem; opacity: 0.5;">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <h4 style="font-size: 1.1rem; color: #374151; margin-bottom: 0.5rem; font-weight: 600;">Keranjang Anda Kosong</h4>
+        <p style="font-size: 0.9rem; line-height: 1.5;">Anda belum menambahkan produk apapun.<br>Yuk, temukan produk menarik!</p>
       </div>
     `;
-    cartDrawerItemsEl.innerHTML = `
-      <div class="empty-cart">
-        <h4>Keranjang Anda masih kosong</h4>
-        <p>Tambahkan produk untuk mulai berbelanja. Total akan terlihat di sini setelah Anda memilih barang.</p>
-      </div>
-    `;
+    if (cartEl) cartEl.innerHTML = emptyHtml;
+    if (cartDrawerItemsEl) cartDrawerItemsEl.innerHTML = emptyHtml;
+
+    document.querySelectorAll('.checkout-btn').forEach(btn => {
+      btn.style.opacity = '0.5';
+      btn.style.pointerEvents = 'none';
+      btn.textContent = 'Keranjang Kosong';
+    });
     return;
   }
+
+  document.querySelectorAll('.checkout-btn').forEach(btn => {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+    btn.textContent = '🚀 Checkout Sekarang';
+  });
 
   const renderCartItems = (container) => {
     cart.forEach(item => {
@@ -200,11 +215,12 @@ function updateCartUI() {
     });
   };
 
-  renderCartItems(cartEl);
-  renderCartItems(cartDrawerItemsEl);
+  if (cartEl) renderCartItems(cartEl);
+  if (cartDrawerItemsEl) renderCartItems(cartDrawerItemsEl);
 }
 
-function toggleCartDrawer() {
+function toggleCartDrawer(event) {
+  if (event) event.preventDefault();
   const drawer = document.getElementById('cartDrawer');
   const overlay = document.getElementById('cartDrawerOverlay');
   drawer.classList.toggle('open');
@@ -276,16 +292,30 @@ function checkout() {
 }
 
 let currentSort = 'terbaru';
+let currentCategory = 'all';
 let currentProducts = [];
 
-function searchProduct() {
+function applyFilters() {
   const searchTerm = document.getElementById('search').value.toLowerCase();
+  
   let filtered = allProducts.filter(p => 
     p.name.toLowerCase().includes(searchTerm)
   );
+
+  if (currentCategory !== 'all') {
+    if (currentCategory === 'sale') {
+      filtered = filtered.filter(p => (p.discount || 0) > 0);
+    } else {
+      // Allow partial match like clothes_men matching clothes
+      filtered = filtered.filter(p => p.category && p.category.includes(currentCategory));
+    }
+  }
   
-  // Apply current sort
   sortProducts(currentSort, filtered);
+}
+
+function searchProduct() {
+  applyFilters();
 }
 
 function sortProducts(sortType, productsToSort = null) {
@@ -331,28 +361,23 @@ updateOrderStatusLink();
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const sortType = btn.dataset.sort;
-    sortProducts(sortType);
+    currentSort = sortType;
+    applyFilters();
   });
 });
 
-// Scroll detection for floating cart button
-let lastScrollTop = 0;
-const floatingCartBtn = document.getElementById('floatingCartBtn');
-if (floatingCartBtn) {
-  window.addEventListener('scroll', () => {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+// Add event listeners to category items
+document.querySelectorAll('.category-item').forEach(item => {
+  item.addEventListener('click', () => {
+    // Update active class
+    document.querySelectorAll('.category-item').forEach(c => {
+      c.classList.remove('active');
+    });
     
-    // Always show button in top 300px
-    if (scrollTop < 300) {
-      floatingCartBtn.classList.remove('hidden');
-    } else if (scrollTop > lastScrollTop) {
-      // Scrolling down - hide button
-      floatingCartBtn.classList.add('hidden');
-    } else {
-      // Scrolling up - show button
-      floatingCartBtn.classList.remove('hidden');
-    }
+    item.classList.add('active');
     
-    lastScrollTop = scrollTop;
+    currentCategory = item.dataset.category;
+    applyFilters();
   });
-}
+});
+
