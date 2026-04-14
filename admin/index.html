@@ -12,7 +12,7 @@
       <h2>ELVOO</h2>
       <div class="user-profile">
         <p id="user-display">Admin</p>
-        <small>Executive Mode</small>
+        <small id="role-display">Executive Mode</small>
       </div>
       <nav>
         <ul>
@@ -170,10 +170,34 @@
           <button class="btn-add" onclick="simpanPerubahanModal()">
             Update Data
           </button>
-          <button onclick="hapusProdukModal()" class="btn-delete-modal">
+          <button
+            onclick="hapusProdukModal()"
+            class="btn-delete-modal"
+            style="
+              background: #ef4444;
+              color: white;
+              border: none;
+              padding: 10px;
+              border-radius: 8px;
+              grid-column: span 2;
+              margin-top: 10px;
+              cursor: pointer;
+            "
+          >
             Hapus Produk
           </button>
         </div>
+      </div>
+    </div>
+
+    <div id="modal-detail" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeDetail()">&times;</span>
+        <h3>Detail Pelanggan</h3>
+        <div
+          id="detail-content"
+          style="margin-top: 20px; line-height: 1.6"
+        ></div>
       </div>
     </div>
 

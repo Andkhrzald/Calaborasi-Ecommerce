@@ -1,5 +1,5 @@
 /* --- RESET & GOOGLE FONTS --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 * {
     margin: 0;
@@ -11,7 +11,7 @@
 body {
     display: flex;
     min-height: 100vh;
-    background: #1a1d21; /* Dark Background */
+    background: #1a1d21; /* Warna Dasar Dark */
     color: #e2e8f0;
 }
 
@@ -24,6 +24,8 @@ body {
     height: 100%;
     border-right: 1px solid #2d3239;
     z-index: 1000;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar h2 {
@@ -44,10 +46,15 @@ body {
 .user-profile p {
     font-weight: 600;
     font-size: 1rem;
+    color: #ffffff;
 }
 
 .user-profile small {
     color: #94a3b8;
+}
+
+nav ul {
+    list-style: none;
 }
 
 .menu-item {
@@ -57,7 +64,6 @@ body {
     border-radius: 8px;
     margin-bottom: 8px;
     transition: all 0.3s ease;
-    list-style: none;
 }
 
 .menu-item:hover {
@@ -73,9 +79,7 @@ body {
 }
 
 .btn-logout {
-    position: absolute;
-    bottom: 30px;
-    width: calc(100% - 40px);
+    margin-top: auto;
     background: transparent;
     color: #ef4444;
     border: 1px solid #ef4444;
@@ -138,7 +142,7 @@ body {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .chart-box {
@@ -157,6 +161,7 @@ body {
 h3, h4 {
     margin-bottom: 20px;
     font-weight: 600;
+    color: #ffffff;
 }
 
 /* --- FORMS & INPUTS --- */
@@ -212,7 +217,7 @@ td {
     font-size: 0.9rem;
 }
 
-/* --- MODALS (Detail & Edit) --- */
+/* --- MODALS --- */
 .modal {
     display: none;
     position: fixed;
@@ -251,7 +256,7 @@ td {
     font-size: 1.5rem;
 }
 
-/* --- SALES PAGE SPECIFICS --- */
+/* --- SALES PAGE HELPERS --- */
 .header-flex {
     display: flex;
     justify-content: space-between;
