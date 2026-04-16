@@ -11,7 +11,8 @@
 body {
     display: flex;
     min-height: 100vh;
-    background: #1a1d21; /* Warna Dasar Dark */
+    background: #1a1d21;
+    /* Warna Dasar Dark */
     color: #e2e8f0;
 }
 
@@ -29,7 +30,8 @@ body {
 }
 
 .sidebar h2 {
-    color: #10b981; /* Emerald Green */
+    color: #10b981;
+    /* Emerald Green */
     letter-spacing: 4px;
     margin-bottom: 35px;
     text-align: center;
@@ -129,13 +131,19 @@ nav ul {
     letter-spacing: 1px;
 }
 
-.stats-card h1, .stats-card h2 {
+.stats-card h1,
+.stats-card h2 {
     margin-top: 10px;
     color: #ffffff;
 }
 
-.status-alert { border-left: 4px solid #ef4444; }
-.status-info { border-left: 4px solid #3b82f6; }
+.status-alert {
+    border-left: 4px solid #ef4444;
+}
+
+.status-info {
+    border-left: 4px solid #3b82f6;
+}
 
 /* --- CHARTS & TABLES --- */
 .chart-container-flex {
@@ -150,7 +158,8 @@ nav ul {
     min-width: 400px;
 }
 
-.card-table, .form {
+.card-table,
+.form {
     background: #262a2f;
     padding: 25px;
     border-radius: 16px;
@@ -158,7 +167,8 @@ nav ul {
     margin-bottom: 25px;
 }
 
-h3, h4 {
+h3,
+h4 {
     margin-bottom: 20px;
     font-weight: 600;
     color: #ffffff;
@@ -243,8 +253,15 @@ td {
 }
 
 @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .close-btn {
@@ -286,13 +303,31 @@ td {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 /* Responsive */
 @media (max-width: 1024px) {
-    .sidebar { width: 80px; padding: 20px 10px; }
-    .sidebar h2, .sidebar p, .sidebar small, .sidebar span { display: none; }
-    .main { margin-left: 80px; width: calc(100% - 80px); }
+    .sidebar {
+        width: 80px;
+        padding: 20px 10px;
+    }
+
+    .sidebar h2,
+    .sidebar p,
+    .sidebar small,
+    .sidebar span {
+        display: none;
+    }
+
+    .main {
+        margin-left: 80px;
+        width: calc(100% - 80px);
+    }
 }
