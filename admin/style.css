@@ -4,15 +4,16 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Sangat penting agar padding tidak merusak lebar */
     font-family: 'Inter', sans-serif;
 }
 
 body {
     display: flex;
     min-height: 100vh;
-    background: #1a1d21; /* Warna Dasar Dark */
+    background: #1a1d21; 
     color: #e2e8f0;
+    overflow-x: hidden; /* Mencegah miring ke samping */
 }
 
 /* --- SIDEBAR --- */
@@ -21,15 +22,17 @@ body {
     background: #111418;
     padding: 30px 20px;
     position: fixed;
-    height: 100%;
+    height: 100vh;
     border-right: 1px solid #2d3239;
     z-index: 1000;
     display: flex;
     flex-direction: column;
+    left: 0;
+    top: 0;
 }
 
 .sidebar h2 {
-    color: #10b981; /* Emerald Green */
+    color: #10b981;
     letter-spacing: 4px;
     margin-bottom: 35px;
     text-align: center;
@@ -45,7 +48,6 @@ body {
 
 .user-profile p {
     font-weight: 600;
-    font-size: 1rem;
     color: #ffffff;
 }
 
@@ -87,22 +89,24 @@ nav ul {
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
-    transition: 0.3s;
 }
 
-.btn-logout:hover {
-    background: #ef4444;
-    color: white;
-}
-
-/* --- MAIN CONTENT AREA --- */
+/* --- MAIN CONTENT AREA (PERBAIKAN DI SINI) --- */
 .main {
-    margin-left: 260px;
+    margin-left: 260px; /* Jarak pas selebar sidebar */
     padding: 40px;
-    width: calc(100% - 260px);
+    width: calc(100% - 260px); /* Mengambil sisa layar */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-/* --- DASHBOARD CARDS --- */
+.content-page {
+    width: 100%;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+/* --- DASHBOARD GRID --- */
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -118,9 +122,7 @@ nav ul {
     transition: transform 0.3s ease;
 }
 
-.stats-card:hover {
-    transform: translateY(-5px);
-}
+.stats-card:hover { transform: translateY(-5px); }
 
 .stats-card small {
     color: #94a3b8;
@@ -129,42 +131,44 @@ nav ul {
     letter-spacing: 1px;
 }
 
-.stats-card h1, .stats-card h2 {
-    margin-top: 10px;
-    color: #ffffff;
-}
-
 .status-alert { border-left: 4px solid #ef4444; }
 .status-info { border-left: 4px solid #3b82f6; }
 
-/* --- CHARTS & TABLES --- */
-.chart-container-flex {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 25px;
-}
-
-.chart-box {
-    flex: 1;
-    min-width: 400px;
-}
-
+/* --- CARD TABLES & FORMS --- */
 .card-table, .form {
     background: #262a2f;
     padding: 25px;
     border-radius: 16px;
     border: 1px solid #2d3239;
     margin-bottom: 25px;
+    width: 100%;
+    overflow-x: auto; /* Agar tabel tidak merusak layout di layar kecil */
 }
 
-h3, h4 {
-    margin-bottom: 20px;
-    font-weight: 600;
-    color: #ffffff;
+/* --- TABLE STYLING --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
 }
 
-/* --- FORMS & INPUTS --- */
+th {
+    text-align: left;
+    color: #94a3b8;
+    font-size: 0.8rem;
+    padding: 15px;
+    border-bottom: 2px solid #2d3239;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #2d3239;
+    font-size: 0.9rem;
+    color: #e2e8f0;
+}
+
+/* --- INPUTS --- */
 .grid-in {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -177,122 +181,30 @@ input {
     padding: 12px 15px;
     border-radius: 8px;
     color: #ffffff;
-    outline: none;
     width: 100%;
 }
 
-input:focus {
-    border-color: #10b981;
-}
+input:focus { border-color: #10b981; }
 
-.btn-add {
-    grid-column: span 2;
+.btn-add, .btn-filter {
     background: #10b981;
     color: white;
     border: none;
-    padding: 15px;
+    padding: 12px 20px;
     border-radius: 8px;
     font-weight: 700;
     cursor: pointer;
-    margin-top: 10px;
-}
-
-/* --- TABLES --- */
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th {
-    text-align: left;
-    color: #64748b;
-    font-size: 0.8rem;
-    padding: 15px;
-    border-bottom: 2px solid #2d3239;
-}
-
-td {
-    padding: 15px;
-    border-bottom: 1px solid #2d3239;
-    font-size: 0.9rem;
-}
-
-/* --- MODALS --- */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(5px);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background: #262a2f;
-    padding: 30px;
-    border-radius: 20px;
-    width: 450px;
-    border: 1px solid #3f444d;
-    position: relative;
-    animation: slideDown 0.3s ease-out;
-}
-
-@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.close-btn {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    color: #94a3b8;
-    cursor: pointer;
-    font-size: 1.5rem;
-}
-
-/* --- SALES PAGE HELPERS --- */
-.header-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.date-filter {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.btn-filter {
-    background: #10b981;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
 }
 
 /* --- ANIMATION --- */
-.content-page {
-    animation: fadeIn 0.4s ease-in-out;
-}
-
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsive */
+/* --- RESPONSIVE --- */
 @media (max-width: 1024px) {
-    .sidebar { width: 80px; padding: 20px 10px; }
-    .sidebar h2, .sidebar p, .sidebar small, .sidebar span { display: none; }
+    .sidebar { width: 80px; }
+    .sidebar h2, .user-profile, .menu-item span { display: none; }
     .main { margin-left: 80px; width: calc(100% - 80px); }
 }

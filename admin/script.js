@@ -1,42 +1,14 @@
-// ==========================================
-// 1. DATABASE ACCESS (LOCAL STORAGE)
-// ==========================================
-const getData = (key) => {
-    try {
-        return JSON.parse(localStorage.getItem(key)) || [];
-    } catch (e) {
-        console.error("Gagal ambil data:", key);
-        return [];
-    }
-};
+const getData = (key) => JSON.parse(localStorage.getItem(key)) || [];
+const saveData = (key, data) => localStorage.setItem(key, JSON.stringify(data));
 
-const saveData = (key, data) => {
-    localStorage.setItem(key, JSON.stringify(data));
-};
+let charts = {};
 
-let charts = {}; 
-
-// ==========================================
-// 2. SISTEM TRACKING VIEW (PRODUK TERPOPULER)
-// ==========================================
-function recordProductView(namaProduk) {
-    let views = JSON.parse(localStorage.getItem("produk_views")) || {};
-    views[namaProduk] = (views[namaProduk] || 0) + 1;
-    localStorage.setItem("produk_views", JSON.stringify(views));
-}
-
-// ==========================================
-// 3. NAVIGASI HALAMAN
-// ==========================================
+// NAVIGATION
 function changePage(pageName) {
     document.querySelectorAll('.content-page').forEach(p => p.style.display = 'none');
     document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-
-    const activePage = document.getElementById('page-' + pageName);
-    if (activePage) activePage.style.display = 'block';
-
-    const activeMenu = document.getElementById('menu-' + pageName);
-    if (activeMenu) activeMenu.classList.add('active');
+    document.getElementById('page-' + pageName).style.display = 'block';
+    document.getElementById('menu-' + pageName).classList.add('active');
 
     if (pageName === 'overview') renderOverview();
     if (pageName === 'inventory') renderInventory();
@@ -44,242 +16,265 @@ function changePage(pageName) {
     if (pageName === 'sales') renderSalesPage();
 }
 
-// ==========================================
-// 4. INVENTORY LOGIC
-// ==========================================
+// INVENTORY
 function tambahProduk() {
-    const n = document.getElementById("nama").value,
-          h = document.getElementById("harga").value,
-          s = document.getElementById("stok").value,
-          g = document.getElementById("gambar").value;
-
-    if (!n || !h || !s) return alert("Data wajib diisi!");
-
+    const n = document.getElementById("nama").value, h = document.getElementById("harga").value, s = document.getElementById("stok").value, g = document.getElementById("gambar").value;
+    if (!n || !h || !s) return alert("Lengkapi data!");
     let pList = getData("produk_clothing");
-    pList.push({
-        id: Date.now(),
-        nama: n,
-        harga: parseInt(h),
-        stok: parseInt(s),
-        gambar: g || 'https://via.placeholder.com/150'
-    });
-
+    pList.push({ nama: n, harga: parseInt(h), stok: parseInt(s), gambar: g || 'https://via.placeholder.com/150' });
     saveData("produk_clothing", pList);
     renderInventory();
     ["nama", "harga", "stok", "gambar"].forEach(id => document.getElementById(id).value = "");
-    alert("Produk Berhasil Masuk!");
 }
 
 function renderInventory() {
     const tbody = document.getElementById("tabel-body");
     const data = getData("produk_clothing");
-    if(!tbody) return;
-
     tbody.innerHTML = data.map((p, i) => `
         <tr>
             <td><img src="${p.gambar}" width="40" height="40" style="border-radius:5px; object-fit:cover;"></td>
             <td>${p.nama}</td>
             <td>Rp ${p.harga.toLocaleString()}</td>
-            <td>${p.stok}</td>
-            <td><button onclick="openModal(${i})" style="color:#10b981; cursor:pointer; background:none; border:1px solid #10b981; padding:5px 10px; border-radius:5px;">Edit/View</button></td>
+            <td style="color:${p.stok < 5 ? '#ef4444' : 'white'}; font-weight:bold">${p.stok}</td>
+            <td>${p.stok < 5 ? 'Menipis' : 'Aman'}</td>
+            <td><button onclick="openModal(${i})" style="color:#10b981; background:none; border:1px solid #10b981; cursor:pointer; border-radius:4px; padding:2px 5px;">Edit</button></td>
         </tr>
     `).join("");
 }
 
-// ==========================================
-// 5. ORDER LOGIC (ANTREAN, APPROVED, REJECTED)
-// ==========================================
+// ORDERS LOGIC (ANTREAN, REJECT, HISTORY APPROVE)
 function renderOrders() {
     const antrean = getData("antrean_pesanan");
-    const rejected = getData("reject_history");
+    const rejected = getData("pesanan_reject");
     const approved = getData("laporan_penjualan");
-    
-    const tbodyApproval = document.getElementById("tabel-order-approval");
-    const tbodyReject = document.getElementById("tabel-order-reject-history");
-    const tbodyApproved = document.getElementById("tabel-order-approved-history");
 
     // 1. Antrean
-    if(tbodyApproval) {
-        tbodyApproval.innerHTML = antrean.map((item, index) => `
-            <tr>
-                <td><small>${item.tanggal}</small></td>
-                <td><strong>${item.namaProduk}</strong></td>
-                <td>Rp ${item.hargaJual.toLocaleString()}</td>
-                <td>
-                    <div style="display:flex; gap:5px;">
-                        <button onclick="showDetail(${index})" style="background:#3b82f6; color:white; border:none; padding:5px 8px; border-radius:4px; cursor:pointer;">Detail</button>
-                        <button onclick="approveOrder(${index})" style="background:#10b981; color:white; border:none; padding:5px 8px; border-radius:4px; cursor:pointer;">Approve</button>
-                        <button onclick="rejectOrder(${index})" style="background:#ef4444; color:white; border:none; padding:5px 8px; border-radius:4px; cursor:pointer;">Reject</button>
-                    </div>
-                </td>
-            </tr>
-        `).join("");
-    }
+    document.getElementById("tabel-order-approval").innerHTML = antrean.length === 0 ? '<tr><td colspan="4" style="text-align:center; opacity:0.5;">Tidak ada pesanan masuk</td></tr>' : 
+    antrean.map((item, i) => `
+        <tr>
+            <td><small>${item.tanggal}</small></td>
+            <td>${item.namaProduk}</td>
+            <td>Rp ${item.hargaJual.toLocaleString()}</td>
+            <td>
+                <button onclick="showDetail(${i})" style="background:#3b82f6; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">Detail</button>
+                <button onclick="approveOrder(${i})" style="background:#10b981; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">Approve</button>
+                <button onclick="rejectOrder(${i})" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">Reject</button>
+            </td>
+        </tr>
+    `).join("");
 
-    // 2. Approved History
-    if(tbodyApproved) {
-        tbodyApproved.innerHTML = approved.map((item) => `
-            <tr style="background: rgba(16, 185, 129, 0.02);">
-                <td><small>${item.tanggal}</small></td>
-                <td>${item.namaProduk}</td>
-                <td>Rp ${item.hargaJual.toLocaleString()}</td>
-                <td><span style="color:#10b981; font-weight:bold;">Selesai</span></td>
-            </tr>
-        `).reverse().slice(0, 10).join("");
-    }
+    // 2. Reject
+    document.getElementById("tabel-order-reject").innerHTML = rejected.length === 0 ? '<tr><td colspan="4" style="text-align:center; opacity:0.5;">Kosong</td></tr>' :
+    rejected.map((item, i) => `
+        <tr style="opacity:0.7">
+            <td><small>${item.tanggal}</small></td>
+            <td>${item.namaProduk}</td>
+            <td><small>${item.alasan || 'N/A'}</small></td>
+            <td><button onclick="removeReject(${i})" style="color:#ef4444; background:none; border:1px solid #ef4444; border-radius:4px; cursor:pointer; padding:2px 6px;">Remove</button></td>
+        </tr>
+    `).join("");
 
-    // 3. Reject History
-    if(tbodyReject) {
-        tbodyReject.innerHTML = rejected.map((item, index) => `
-            <tr style="opacity: 0.6; background: rgba(239, 68, 68, 0.02);">
-                <td><small>${item.tanggal}</small></td>
-                <td><del>${item.namaProduk}</del></td>
-                <td>Rp ${item.hargaJual.toLocaleString()}</td>
-                <td>
-                    <button onclick="removeRejectHistory(${index})" style="background:transparent; color:#ef4444; border:1px solid #ef4444; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:12px;">Remove</button>
-                </td>
-            </tr>
-        `).join("");
-    }
+    // 3. History Approve
+    document.getElementById("tabel-order-history-approve").innerHTML = approved.length === 0 ? '<tr><td colspan="4" style="text-align:center; opacity:0.5;">Belum ada pesanan selesai</td></tr>' :
+    approved.slice(-10).reverse().map(item => `
+        <tr style="background: rgba(16, 185, 129, 0.05)">
+            <td><small>${item.tanggal}</small></td>
+            <td>${item.namaProduk}</td>
+            <td>Rp ${item.hargaJual.toLocaleString()}</td>
+            <td style="color:#10b981; font-weight:bold;">BERHASIL</td>
+        </tr>
+    `).join("");
 }
+
+// Fitur Tombol di Order
+function showDetail(index) {
+    const data = getData("antrean_pesanan")[index];
+    document.getElementById("content-detail").innerHTML = `
+        <p><strong>Nama Produk:</strong> ${data.namaProduk}</p>
+        <p><strong>Harga:</strong> Rp ${data.hargaJual.toLocaleString()}</p>
+        <p><strong>Tanggal:</strong> ${data.tanggal}</p>
+        <p><strong>Status:</strong> Menunggu Persetujuan</p>
+    `;
+    document.getElementById("modal-detail").style.display = "flex";
+}
+function closeDetail() { document.getElementById("modal-detail").style.display = "none"; }
 
 function approveOrder(index) {
     let antrean = getData("antrean_pesanan");
-    let penghasilan = getData("laporan_penjualan");
-    penghasilan.push(antrean[index]);
-    saveData("laporan_penjualan", penghasilan);
+    let approved = getData("laporan_penjualan");
+    let produk = getData("produk_clothing");
+
+    // Update Stok
+    let pIdx = produk.findIndex(p => p.nama === antrean[index].namaProduk);
+    if(pIdx !== -1) { produk[pIdx].stok -= 1; saveData("produk_clothing", produk); }
+
+    approved.push(antrean[index]);
+    saveData("laporan_penjualan", approved);
     antrean.splice(index, 1);
     saveData("antrean_pesanan", antrean);
     renderOrders();
-    alert("Pesanan Disetujui!");
 }
 
 function rejectOrder(index) {
-    if (confirm("Tolak pesanan ini?")) {
-        let antrean = getData("antrean_pesanan");
-        let rejectHistory = getData("reject_history");
-        rejectHistory.push(antrean[index]);
-        saveData("reject_history", rejectHistory);
-        antrean.splice(index, 1);
-        saveData("antrean_pesanan", antrean);
+    let alasan = prompt("Alasan penolakan:");
+    let antrean = getData("antrean_pesanan");
+    let rejected = getData("pesanan_reject");
+
+    let item = antrean[index];
+    item.alasan = alasan || "Dibatalkan Admin";
+    rejected.push(item);
+    saveData("pesanan_reject", rejected);
+    antrean.splice(index, 1);
+    saveData("antrean_pesanan", antrean);
+    renderOrders();
+}
+
+function removeReject(index) {
+    if(confirm("Hapus history ini?")) {
+        let rejected = getData("pesanan_reject");
+        rejected.splice(index, 1);
+        saveData("pesanan_reject", rejected);
         renderOrders();
     }
 }
 
-function removeRejectHistory(index) {
-    if (confirm("Hapus permanen?")) {
-        let rejectHistory = getData("reject_history");
-        rejectHistory.splice(index, 1);
-        saveData("reject_history", rejectHistory);
-        renderOrders();
-    }
-}
-
-// ==========================================
-// 6. OVERVIEW & ANALYTICS
-// ==========================================
+// OVERVIEW & SALES
 function renderOverview() {
+    // 1. Ambil Data Dasar
     const sales = getData("laporan_penjualan");
     const produk = getData("produk_clothing");
-    const orders = getData("antrean_pesanan");
-    const views = JSON.parse(localStorage.getItem("produk_views")) || {};
-
-    const omsetElem = document.getElementById("ov-total-omset");
-    if(omsetElem) omsetElem.innerText = `Rp ${sales.reduce((a, b) => a + (b.hargaJual || 0), 0).toLocaleString()}`;
+    const pending = getData("antrean_pesanan");
     
-    const stokElem = document.getElementById("ov-stok-low");
-    if(stokElem) stokElem.innerText = produk.filter(p => p.stok < 5).length;
-    
-    const pendingElem = document.getElementById("ov-pending");
-    if(pendingElem) pendingElem.innerText = orders.length;
+    // 2. Ambil Data Views (Klik terbanyak)
+    let views = {};
+    try {
+        const storedViews = localStorage.getItem("produk_views");
+        views = storedViews ? JSON.parse(storedViews) : {};
+    } catch (e) { views = {}; }
 
+    // 3. Update Stats Card
+    // Menggunakan Number() agar penjumlahan aman dari error string
+    const totalOmset = sales.reduce((a, b) => a + (Number(b.hargaJual) || 0), 0);
+    document.getElementById("ov-total-omset").innerText = `Rp ${totalOmset.toLocaleString()}`;
+    document.getElementById("ov-stok-low").innerText = produk.filter(p => p.stok < 5).length;
+    document.getElementById("ov-pending").innerText = pending.length;
+
+    // 4. FITUR BARU: Render Tabel Produk Terpopuler
     const tbodyPopuler = document.getElementById("tabel-populer");
-    if(tbodyPopuler) {
-        let sortedPopuler = produk.map(p => ({
+    if (tbodyPopuler) {
+        // Map data produk dan pasangkan dengan jumlah view
+        let populerData = produk.map(p => ({
             nama: p.nama,
-            gambar: p.gambar,
-            viewCount: views[p.nama] || 0
-        })).sort((a, b) => b.viewCount - a.viewCount);
+            harga: p.harga,
+            gambar: p.gambar || 'https://via.placeholder.com/40',
+            count: views[p.nama] || 0
+        }));
 
-        tbodyPopuler.innerHTML = sortedPopuler.slice(0, 5).map(p => `
+        // Urutkan dari yang paling banyak dilihat
+        populerData.sort((a, b) => b.count - a.count);
+
+        // Tampilkan Top 5 di tabel
+        tbodyPopuler.innerHTML = populerData.slice(0, 5).map(p => `
             <tr>
                 <td><img src="${p.gambar}" width="35" height="35" style="border-radius:5px; object-fit:cover;"></td>
                 <td>${p.nama}</td>
-                <td><span style="background:#1e293b; padding:2px 8px; border-radius:10px; color:#10b981; font-size:12px;">${p.viewCount} Views</span></td>
+                <td>Rp ${Number(p.harga).toLocaleString()}</td>
+                <td>
+                    <span style="background: rgba(245, 158, 11, 0.1); padding: 4px 10px; border-radius: 20px; color: #f59e0b; font-size: 12px; font-weight: bold;">
+                        ${p.count} Views
+                    </span>
+                </td>
             </tr>
         `).join("");
     }
 
-    const labels = []; const values = [];
+    // 5. Logika Grafik (7 Hari Terakhir)
+    const labels = []; 
+    const values = [];
     for (let i = 6; i >= 0; i--) {
-        const d = new Date(); d.setDate(d.getDate() - i);
+        const d = new Date(); 
+        d.setDate(d.getDate() - i);
         const t = d.toLocaleDateString('id-ID');
         labels.push(t);
-        const total = sales.filter(s => s.tanggal && s.tanggal.startsWith(t)).reduce((a, b) => a + (b.hargaJual || 0), 0);
-        values.push(total);
+        
+        // Filter sales berdasarkan tanggal dan jumlahkan nominalnya
+        const dailyTotal = sales
+            .filter(s => s.tanggal && s.tanggal.startsWith(t))
+            .reduce((a, b) => a + (Number(b.hargaJual) || 0), 0);
+        values.push(dailyTotal);
     }
-    renderChart('salesChartOverview', 'line', labels, values, '#10b981');
+    
+    // Pastikan nama fungsi grafik sesuai dengan yang kamu punya (drawChart)
+    if (typeof drawChart === "function") {
+        drawChart('salesChartOverview', labels, values, '#10b981');
+    }
 }
-
 function renderSalesPage() {
     const allSales = getData("laporan_penjualan");
-    const totalElem = document.getElementById("sales-period-total");
-    if(totalElem) totalElem.innerText = `Rp ${allSales.reduce((a, b) => a + (b.hargaJual || 0), 0).toLocaleString()}`;
+    const tglMulai = document.getElementById("filter-mulai").value;
+    const tglSelesai = document.getElementById("filter-selesai").value;
 
-    const tbodySales = document.getElementById("tabel-terjual");
-    if(tbodySales) {
-        tbodySales.innerHTML = allSales.map(s => `
-            <tr><td>${s.tanggal}</td><td>${s.namaProduk}</td><td>Rp ${s.hargaJual.toLocaleString()}</td><td>Selesai</td></tr>
-        `).reverse().join("");
+    let filtered = allSales;
+    if (tglMulai && tglSelesai) {
+        filtered = allSales.filter(s => {
+            const [d, m, y] = s.tanggal.split(',')[0].split('/');
+            const itemDate = new Date(`${y}-${m}-${d}`);
+            return itemDate >= new Date(tglMulai) && itemDate <= new Date(tglSelesai);
+        });
     }
+
+    document.getElementById("sales-period-total").innerText = `Rp ${filtered.reduce((a, b) => a + b.hargaJual, 0).toLocaleString()}`;
+
+    // History 30 Hari & Total Omset Bulan Ini
+    const thirtyDaysAgo = new Date(); thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const history30 = allSales.filter(s => {
+        const [d, m, y] = s.tanggal.split(',')[0].split('/');
+        return new Date(`${y}-${m}-${d}`) >= thirtyDaysAgo;
+    });
+
+    document.getElementById("total-omset-30hari").innerText = `Rp ${history30.reduce((a, b) => a + b.hargaJual, 0).toLocaleString()}`;
+    document.getElementById("tabel-history-30hari").innerHTML = history30.reverse().map(s => `
+        <tr><td>${s.tanggal}</td><td>${s.namaProduk}</td><td>Rp ${s.hargaJual.toLocaleString()}</td><td>Selesai</td></tr>
+    `).join("");
+
+    const group = filtered.reduce((acc, curr) => {
+        const tgl = curr.tanggal.split(',')[0];
+        acc[tgl] = (acc[tgl] || 0) + curr.hargaJual;
+        return acc;
+    }, {});
+    drawChart('detailedSalesChart', Object.keys(group), Object.values(group), '#3b82f6');
 }
 
-function renderChart(id, type, labels, data, color) {
-    const canvas = document.getElementById(id);
-    if (!canvas) return;
+function drawChart(id, labels, data, color) {
+    const ctx = document.getElementById(id).getContext('2d');
     if (charts[id]) charts[id].destroy();
-    charts[id] = new Chart(canvas.getContext('2d'), {
-        type: type,
+    charts[id] = new Chart(ctx, {
+        type: 'line',
         data: { labels, datasets: [{ data, borderColor: color, backgroundColor: color + '22', fill: true, tension: 0.4 }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
 }
 
-// ==========================================
-// 7. UI HELPERS & MODAL
-// ==========================================
+// MODAL PRODUK
 function openModal(i) {
     const p = getData("produk_clothing")[i];
-    recordProductView(p.nama);
     document.getElementById("modal-nama").value = p.nama;
     document.getElementById("modal-harga").value = p.harga;
     document.getElementById("modal-stok").value = p.stok;
-    document.getElementById("modal-gambar").value = p.gambar;
     document.getElementById("modal-index").value = i;
     document.getElementById("modal-edit").style.display = "flex";
 }
-
-function showDetail(index) {
-    const item = getData("antrean_pesanan")[index];
-    const content = document.getElementById("detail-content");
-    if (item && item.customer) {
-        content.innerHTML = `<p><strong>Nama:</strong> ${item.customer.nama}</p><p><strong>WA:</strong> ${item.customer.telp}</p><p><strong>Alamat:</strong> ${item.customer.alamat}</p>`;
-    }
-    document.getElementById("modal-detail").style.display = "flex";
+function closeModal() { document.getElementById("modal-edit").style.display = "none"; }
+function simpanPerubahanModal() {
+    let pList = getData("produk_clothing");
+    let i = document.getElementById("modal-index").value;
+    pList[i].nama = document.getElementById("modal-nama").value;
+    pList[i].harga = parseInt(document.getElementById("modal-harga").value);
+    pList[i].stok = parseInt(document.getElementById("modal-stok").value);
+    saveData("produk_clothing", pList);
+    renderInventory();
+    closeModal();
 }
 
-function closeModal() {
-    document.getElementById("modal-edit").style.display = "none";
-    document.getElementById("modal-detail").style.display = "none";
-}
-
-function logout() {
-    window.location.href = "login.html";
-}
-
-// ==========================================
-// 8. INITIAL LOAD
-// ==========================================
-window.onload = () => {
-    changePage('overview');
-};
+function logout() { if(confirm("Keluar?")) window.location.href = "login.html"; }
+window.onload = () => changePage('overview');

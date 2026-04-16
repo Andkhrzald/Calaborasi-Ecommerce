@@ -45,7 +45,7 @@
       <div id="page-overview" class="content-page">
         <div class="dashboard-grid">
           <div class="stats-card">
-            <small>Total Omset</small>
+            <small>Total Omset (Seluruh Waktu)</small>
             <h1 id="ov-total-omset">Rp 0</h1>
           </div>
           <div class="stats-card status-alert">
@@ -58,30 +58,44 @@
           </div>
         </div>
 
-        <div class="chart-container-flex">
-          <div class="card-table chart-box">
-            <h4>📈 Tren Pendapatan</h4>
-            <div style="height: 250px">
-              <canvas id="salesChartOverview"></canvas>
-            </div>
+        <div class="card-table" style="margin: 20px 0">
+          <h4>📈 Tren Pendapatan (7 Hari Terakhir)</h4>
+          <div style="height: 250px">
+            <canvas id="salesChartOverview"></canvas>
           </div>
         </div>
 
-        <div class="card-table" style="margin-top: 20px">
-          <h3>🔥 Produk Paling Sering Dilihat</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Foto</th>
-                <th>Nama Produk</th>
-                <th>Jumlah Klik/View</th>
-              </tr>
-            </thead>
-            <tbody id="tabel-populer"></tbody>
-          </table>
+        <div
+          class="card-table"
+          style="margin-top: 20px; border-left: 5px solid #f59e0b"
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <h4>🔥 Produk Paling Sering Dilihat (Top 5)</h4>
+            <small style="color: #94a3b8"
+              >Berdasarkan klik "Update/View" di Inventory</small
+            >
+          </div>
+          <div style="margin-top: 15px">
+            <table>
+              <thead>
+                <tr>
+                  <th>Foto</th>
+                  <th>Nama Produk</th>
+                  <th>Harga</th>
+                  <th>Popularitas</th>
+                </tr>
+              </thead>
+              <tbody id="tabel-populer"></tbody>
+            </table>
+          </div>
         </div>
       </div>
-
       <div id="page-inventory" class="content-page" style="display: none">
         <div class="form">
           <h3>Tambah Produk Baru</h3>
@@ -95,8 +109,8 @@
             </button>
           </div>
         </div>
-        <div class="card-table">
-          <h3>Daftar Barang</h3>
+        <div class="card-table" style="margin-top: 20px">
+          <h3>📦 Daftar Inventaris Barang</h3>
           <table>
             <thead>
               <tr>
@@ -104,6 +118,7 @@
                 <th>Produk</th>
                 <th>Harga</th>
                 <th>Stok</th>
+                <th>Status</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -111,7 +126,6 @@
           </table>
         </div>
       </div>
-
       <div id="page-orders" class="content-page" style="display: none">
         <div class="card-table">
           <h3>🔔 Antrean Pesanan Masuk</h3>
@@ -127,28 +141,9 @@
             <tbody id="tabel-order-approval"></tbody>
           </table>
         </div>
-
         <div
           class="card-table"
-          style="margin-top: 30px; border-top: 2px solid #10b981"
-        >
-          <h3 style="color: #10b981">✅ Pesanan Berhasil (Approved)</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Waktu</th>
-                <th>Produk</th>
-                <th>Nominal</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="tabel-order-approved-history"></tbody>
-          </table>
-        </div>
-
-        <div
-          class="card-table"
-          style="margin-top: 30px; border-top: 2px solid #ef4444"
+          style="margin-top: 30px; border-top: 3px solid #ef4444"
         >
           <h3 style="color: #ef4444">❌ Riwayat Pesanan Ditolak</h3>
           <table>
@@ -156,67 +151,115 @@
               <tr>
                 <th>Waktu</th>
                 <th>Produk</th>
-                <th>Nominal</th>
+                <th>Alasan</th>
                 <th>Aksi</th>
               </tr>
             </thead>
-            <tbody id="tabel-order-reject-history"></tbody>
+            <tbody id="tabel-order-reject"></tbody>
           </table>
         </div>
-      </div>
-
-      <div id="page-sales" class="content-page" style="display: none">
-        <div class="card-table">
-          <div class="header-flex">
-            <h4>📈 Laporan Penghasilan</h4>
-          </div>
-          <h1 id="sales-period-total" style="color: #10b981; margin: 20px 0">
-            Rp 0
-          </h1>
-        </div>
-        <div class="card-table">
-          <h4>📋 Riwayat Terjual</h4>
+        <div
+          class="card-table"
+          style="margin-top: 30px; border-top: 3px solid #10b981"
+        >
+          <h3 style="color: #10b981">✅ History Pesanan Berhasil</h3>
           <table>
             <thead>
               <tr>
-                <th>Tanggal</th>
+                <th>Waktu</th>
                 <th>Produk</th>
-                <th>Harga</th>
+                <th>Nominal</th>
                 <th>Status</th>
               </tr>
             </thead>
-            <tbody id="tabel-terjual"></tbody>
+            <tbody id="tabel-order-history-approve"></tbody>
           </table>
         </div>
       </div>
-    </div>
+      <div id="page-sales" class="content-page" style="display: none">
+        <div class="card-table">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              flex-wrap: wrap;
+              gap: 15px;
+            "
+          >
+            <h4>📈 Filter Analisis Pendapatan</h4>
+            <div
+              style="
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                background: #1e293b;
+                padding: 10px;
+                border-radius: 8px;
+              "
+            >
+              <input type="date" id="filter-mulai" class="filter-input-style" />
+              <span>s/d</span>
+              <input
+                type="date"
+                id="filter-selesai"
+                class="filter-input-style"
+              />
+              <button onclick="renderSalesPage()" class="btn-filter-action">
+                Filter
+              </button>
+            </div>
+          </div>
+          <div style="margin-top: 20px">
+            <small>Total Omset Terfilter:</small>
+            <h1 id="sales-period-total" style="color: #3b82f6">Rp 0</h1>
+          </div>
+          <div style="height: 300px; margin-top: 20px">
+            <canvas id="detailedSalesChart"></canvas>
+          </div>
+        </div>
 
-    <div id="modal-edit" class="modal">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h3>Update Produk</h3>
-        <div class="grid-in" style="margin-top: 20px">
-          <input type="text" id="modal-nama" />
-          <input type="number" id="modal-harga" />
-          <input type="number" id="modal-stok" />
-          <input type="text" id="modal-gambar" />
-          <input type="hidden" id="modal-index" />
-          <button class="btn-add" onclick="simpanPerubahanModal()">
-            Update Data
-          </button>
+        <div
+          class="card-table"
+          style="margin-top: 20px; border-left: 5px solid #10b981"
+        >
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <h3>📅 History Pendapatan (30 Hari Terakhir)</h3>
+            <div style="text-align: right">
+              <small>Total Omset Bulan Ini:</small>
+              <h2 id="total-omset-30hari" style="color: #10b981; margin: 0">
+                Rp 0
+              </h2>
+            </div>
+          </div>
+          <div style="max-height: 400px; overflow-y: auto; margin-top: 15px">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Produk</th>
+                  <th>Harga</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="tabel-history-30hari"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
+    <div id="modal-edit" class="modal">
+      <div class="modal-content"></div>
+    </div>
 
     <div id="modal-detail" class="modal">
-      <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h3>Detail Pelanggan</h3>
-        <div
-          id="detail-content"
-          style="margin-top: 20px; line-height: 1.6"
-        ></div>
-      </div>
+      <div class="modal-content"></div>
     </div>
 
     <script src="script.js"></script>
