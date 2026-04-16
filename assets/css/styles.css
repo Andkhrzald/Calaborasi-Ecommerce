@@ -5,7 +5,7 @@
 }
 
 body {
-    background: linear-gradient(135deg,#57573e,#efedf1);
+    background: linear-gradient(135deg, #57573e, #efedf1);
 }
 
 /* Wrapper */
@@ -73,7 +73,7 @@ body {
 /* Cards */
 .stats {
     display: grid;
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 15px;
     margin-bottom: 20px;
 }
@@ -113,7 +113,8 @@ table {
     margin-top: 10px;
 }
 
-th, td {
+th,
+td {
     padding: 10px;
     text-align: left;
 }
@@ -149,9 +150,12 @@ th, td {
 }
 
 .sidebar a {
-    text-decoration: none;   /* hilangin garis bawah */
-    color: black;            /* warna normal */
-    display: block;          /* biar full klik area */
+    text-decoration: none;
+    /* hilangin garis bawah */
+    color: black;
+    /* warna normal */
+    display: block;
+    /* biar full klik area */
     padding: 10px;
     border-radius: 10px;
 }

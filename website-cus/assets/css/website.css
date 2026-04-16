@@ -19,7 +19,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-  background-color: #F8F9FA;
+  background-color: #cccccc;
   color: #2D3436;
   line-height: 1.6;
   font-size: 14px;
@@ -31,7 +31,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, #eaebee 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #8b898b 0%, #8b898b 100%);
   box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
@@ -63,7 +63,7 @@ body {
 }
 
 .menu a:hover {
-  color: white;
+  color: rgb(254, 255, 255);
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -140,9 +140,9 @@ body {
   justify-content: center;
   font-size: 0.75rem;
   font-weight: 700;
-  border: 2px solid #764ba2;
+  border: 2px solid #000000;
   /* blend with navbar */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(85, 19, 19, 0.2);
 }
 
 /* ========== LEFT SIDEBAR (FILTERS) ========== */
@@ -197,8 +197,8 @@ body {
 
 .category-item.active {
   background: transparent;
-  color: #2563eb;
-  border-left: 3px solid #2563eb;
+  color: #343434;
+  border-left: 3px solid #212121;
   font-weight: 600;
 }
 

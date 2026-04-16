@@ -14,7 +14,7 @@ const saveData = (key, data) => {
     localStorage.setItem(key, JSON.stringify(data));
 };
 
-let charts = {}; 
+let charts = {};
 
 // ==========================================
 // 2. SISTEM TRACKING VIEW (PRODUK TERPOPULER)
@@ -49,9 +49,9 @@ function changePage(pageName) {
 // ==========================================
 function tambahProduk() {
     const n = document.getElementById("nama").value,
-          h = document.getElementById("harga").value,
-          s = document.getElementById("stok").value,
-          g = document.getElementById("gambar").value;
+        h = document.getElementById("harga").value,
+        s = document.getElementById("stok").value,
+        g = document.getElementById("gambar").value;
 
     if (!n || !h || !s) return alert("Data wajib diisi!");
 
@@ -73,7 +73,7 @@ function tambahProduk() {
 function renderInventory() {
     const tbody = document.getElementById("tabel-body");
     const data = getData("produk_clothing");
-    if(!tbody) return;
+    if (!tbody) return;
 
     tbody.innerHTML = data.map((p, i) => `
         <tr>
@@ -93,13 +93,13 @@ function renderOrders() {
     const antrean = getData("antrean_pesanan");
     const rejected = getData("reject_history");
     const approved = getData("laporan_penjualan");
-    
+
     const tbodyApproval = document.getElementById("tabel-order-approval");
     const tbodyReject = document.getElementById("tabel-order-reject-history");
     const tbodyApproved = document.getElementById("tabel-order-approved-history");
 
     // 1. Antrean
-    if(tbodyApproval) {
+    if (tbodyApproval) {
         tbodyApproval.innerHTML = antrean.map((item, index) => `
             <tr>
                 <td><small>${item.tanggal}</small></td>
@@ -117,7 +117,7 @@ function renderOrders() {
     }
 
     // 2. Approved History
-    if(tbodyApproved) {
+    if (tbodyApproved) {
         tbodyApproved.innerHTML = approved.map((item) => `
             <tr style="background: rgba(16, 185, 129, 0.02);">
                 <td><small>${item.tanggal}</small></td>
@@ -129,7 +129,7 @@ function renderOrders() {
     }
 
     // 3. Reject History
-    if(tbodyReject) {
+    if (tbodyReject) {
         tbodyReject.innerHTML = rejected.map((item, index) => `
             <tr style="opacity: 0.6; background: rgba(239, 68, 68, 0.02);">
                 <td><small>${item.tanggal}</small></td>
@@ -185,16 +185,16 @@ function renderOverview() {
     const views = JSON.parse(localStorage.getItem("produk_views")) || {};
 
     const omsetElem = document.getElementById("ov-total-omset");
-    if(omsetElem) omsetElem.innerText = `Rp ${sales.reduce((a, b) => a + (b.hargaJual || 0), 0).toLocaleString()}`;
-    
+    if (omsetElem) omsetElem.innerText = `Rp ${sales.reduce((a, b) => a + (b.hargaJual || 0), 0).toLocaleString()}`;
+
     const stokElem = document.getElementById("ov-stok-low");
-    if(stokElem) stokElem.innerText = produk.filter(p => p.stok < 5).length;
-    
+    if (stokElem) stokElem.innerText = produk.filter(p => p.stok < 5).length;
+
     const pendingElem = document.getElementById("ov-pending");
-    if(pendingElem) pendingElem.innerText = orders.length;
+    if (pendingElem) pendingElem.innerText = orders.length;
 
     const tbodyPopuler = document.getElementById("tabel-populer");
-    if(tbodyPopuler) {
+    if (tbodyPopuler) {
         let sortedPopuler = produk.map(p => ({
             nama: p.nama,
             gambar: p.gambar,
@@ -224,10 +224,10 @@ function renderOverview() {
 function renderSalesPage() {
     const allSales = getData("laporan_penjualan");
     const totalElem = document.getElementById("sales-period-total");
-    if(totalElem) totalElem.innerText = `Rp ${allSales.reduce((a, b) => a + (b.hargaJual || 0), 0).toLocaleString()}`;
+    if (totalElem) totalElem.innerText = `Rp ${allSales.reduce((a, b) => a + (b.hargaJual || 0), 0).toLocaleString()}`;
 
     const tbodySales = document.getElementById("tabel-terjual");
-    if(tbodySales) {
+    if (tbodySales) {
         tbodySales.innerHTML = allSales.map(s => `
             <tr><td>${s.tanggal}</td><td>${s.namaProduk}</td><td>Rp ${s.hargaJual.toLocaleString()}</td><td>Selesai</td></tr>
         `).reverse().join("");
