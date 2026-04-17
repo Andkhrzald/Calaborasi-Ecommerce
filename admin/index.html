@@ -45,7 +45,7 @@
       <div id="page-overview" class="content-page">
         <div class="dashboard-grid">
           <div class="stats-card">
-            <small>Total Omset (Seluruh Waktu)</small>
+            <small>Total Omset</small>
             <h1 id="ov-total-omset">Rp 0</h1>
           </div>
           <div class="stats-card status-alert">
@@ -53,69 +53,48 @@
             <h2 id="ov-stok-low">0</h2>
           </div>
           <div class="stats-card status-info">
-            <small>Pesanan Antre</small>
+            <small>Pesanan Antri</small>
             <h2 id="ov-pending">0</h2>
           </div>
         </div>
-
         <div class="card-table" style="margin: 20px 0">
-          <h4>📈 Tren Pendapatan (7 Hari Terakhir)</h4>
+          <h4>📈 Tren Pendapatan</h4>
           <div style="height: 250px">
             <canvas id="salesChartOverview"></canvas>
           </div>
         </div>
-
-        <div
-          class="card-table"
-          style="margin-top: 20px; border-left: 5px solid #f59e0b"
-        >
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-            "
-          >
-            <h4>🔥 Produk Paling Sering Dilihat (Top 5)</h4>
-            <small style="color: #94a3b8"
-              >Berdasarkan klik "Update/View" di Inventory</small
-            >
-          </div>
-          <div style="margin-top: 15px">
-            <table>
-              <thead>
-                <tr>
-                  <th>Foto</th>
-                  <th>Nama Produk</th>
-                  <th>Harga</th>
-                  <th>Popularitas</th>
-                </tr>
-              </thead>
-              <tbody id="tabel-populer"></tbody>
-            </table>
-          </div>
+        <div class="card-table">
+          <h4>🔥 Produk Populer (Stok Terendah)</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Foto</th>
+                <th>Nama</th>
+                <th>Harga</th>
+                <th>Stok</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-populer"></tbody>
+          </table>
         </div>
       </div>
 
       <div id="page-inventory" class="content-page" style="display: none">
         <div class="form">
-          <h3>Tambah Produk Baru</h3>
+          <h3>Tambah Produk</h3>
           <div class="grid-in">
             <input type="text" id="nama" placeholder="Nama Produk" />
             <input type="number" id="harga" placeholder="Harga" />
             <input type="number" id="stok" placeholder="Stok" />
-            <input type="text" id="gambar" placeholder="Link Gambar (URL)" />
-            <button class="btn-add" onclick="tambahProduk()">
-              SIMPAN PRODUK
-            </button>
+            <input type="text" id="gambar" placeholder="URL Gambar" />
+            <button class="btn-add" onclick="tambahProduk()">SIMPAN</button>
           </div>
         </div>
         <div class="card-table" style="margin-top: 20px">
-          <h3>📦 Daftar Inventaris Barang</h3>
           <table>
             <thead>
               <tr>
-                <th>Gambar</th>
+                <th>Foto</th>
                 <th>Produk</th>
                 <th>Harga</th>
                 <th>Stok</th>
@@ -130,7 +109,7 @@
 
       <div id="page-orders" class="content-page" style="display: none">
         <div class="card-table">
-          <h3>🔔 Antrean Pesanan Masuk</h3>
+          <h3>🔔 Antrean Pesanan</h3>
           <table>
             <thead>
               <tr>
@@ -145,7 +124,7 @@
         </div>
         <div
           class="card-table"
-          style="margin-top: 30px; border-top: 3px solid #ef4444"
+          style="margin-top: 25px; border-top: 3px solid #ef4444"
         >
           <h3 style="color: #ef4444">❌ Riwayat Pesanan Ditolak</h3>
           <table>
@@ -162,16 +141,16 @@
         </div>
         <div
           class="card-table"
-          style="margin-top: 30px; border-top: 3px solid #10b981"
+          style="margin-top: 25px; border-top: 3px solid #10b981"
         >
-          <h3 style="color: #10b981">✅ History Pesanan Berhasil</h3>
+          <h3 style="color: #10b981">✅ History Berhasil (Nota)</h3>
           <table>
             <thead>
               <tr>
                 <th>Waktu</th>
                 <th>Produk</th>
                 <th>Nominal</th>
-                <th>Status</th>
+                <th>Aksi</th>
               </tr>
             </thead>
             <tbody id="tabel-order-history-approve"></tbody>
@@ -181,82 +160,27 @@
 
       <div id="page-sales" class="content-page" style="display: none">
         <div class="card-table">
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              flex-wrap: wrap;
-              gap: 15px;
-            "
-          >
-            <h4>📈 Filter Analisis Pendapatan</h4>
-            <div
-              style="
-                display: flex;
-                gap: 10px;
-                align-items: center;
-                background: #1e293b;
-                padding: 10px;
-                border-radius: 8px;
-              "
-            >
-              <input type="date" id="filter-mulai" class="filter-input-style" />
-              <span>s/d</span>
-              <input
-                type="date"
-                id="filter-selesai"
-                class="filter-input-style"
-              />
-              <button onclick="renderSalesPage()" class="btn-filter-action">
-                Filter
-              </button>
-            </div>
-          </div>
-          <div style="margin-top: 20px">
-            <small>Total Omset Terfilter:</small>
-            <h1 id="sales-period-total" style="color: #3b82f6">Rp 0</h1>
-          </div>
-          <div style="height: 300px; margin-top: 20px">
+          <h4>📈 Laporan Penghasilan</h4>
+          <h1 id="sales-period-total" style="color: #3b82f6">Rp 0</h1>
+          <div style="height: 250px; margin: 20px 0">
             <canvas id="detailedSalesChart"></canvas>
           </div>
-        </div>
-
-        <div
-          class="card-table"
-          style="margin-top: 20px; border-left: 5px solid #10b981"
-        >
-          <div
-            style="
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-            "
-          >
-            <h3>📅 History Pendapatan (30 Hari Terakhir)</h3>
-            <div style="text-align: right">
-              <small>Total Omset Bulan Ini:</small>
-              <h2 id="total-omset-30hari" style="color: #10b981; margin: 0">
-                Rp 0
-              </h2>
-            </div>
-          </div>
-          <div style="max-height: 400px; overflow-y: auto; margin-top: 15px">
-            <table>
-              <thead>
-                <tr>
-                  <th>Tanggal</th>
-                  <th>Produk</th>
-                  <th>Harga</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="tabel-history-30hari"></tbody>
-            </table>
-          </div>
+          <h4>📋 Log Transaksi</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Produk</th>
+                <th>Nominal</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-history-30hari"></tbody>
+          </table>
         </div>
       </div>
     </div>
+
     <div
       id="modal-edit"
       class="modal"
@@ -264,10 +188,10 @@
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(0, 0, 0, 0.85);
         justify-content: center;
         align-items: center;
-        z-index: 2000;
+        z-index: 999;
       "
     >
       <div
@@ -276,95 +200,81 @@
           background: #1e293b;
           padding: 25px;
           border-radius: 15px;
-          width: 350px;
+          width: 320px;
           color: white;
         "
       >
-        <h3 style="margin-bottom: 15px">Update Produk</h3>
-        <div style="display: flex; flex-direction: column; gap: 10px">
-          <input
-            type="text"
-            id="modal-nama"
-            placeholder="Nama Produk"
-            style="
-              padding: 10px;
-              border-radius: 5px;
-              background: #0f172a;
-              border: 1px solid #334155;
-              color: white;
-            "
-          />
-          <input
-            type="number"
-            id="modal-harga"
-            placeholder="Harga"
-            style="
-              padding: 10px;
-              border-radius: 5px;
-              background: #0f172a;
-              border: 1px solid #334155;
-              color: white;
-            "
-          />
-          <input
-            type="number"
-            id="modal-stok"
-            placeholder="Stok"
-            style="
-              padding: 10px;
-              border-radius: 5px;
-              background: #0f172a;
-              border: 1px solid #334155;
-              color: white;
-            "
-          />
-          <input type="hidden" id="modal-index" />
-
-          <button
-            onclick="simpanPerubahanModal()"
-            style="
-              background: #10b981;
-              color: white;
-              border: none;
-              padding: 12px;
-              border-radius: 8px;
-              cursor: pointer;
-              font-weight: bold;
-              margin-top: 10px;
-            "
-          >
-            Simpan Perubahan
-          </button>
-
-          <button
-            onclick="hapusProdukDariModal()"
-            style="
-              background: transparent;
-              color: #ef4444;
-              border: 1px solid #ef4444;
-              padding: 10px;
-              border-radius: 8px;
-              cursor: pointer;
-              font-size: 0.85rem;
-            "
-          >
-            🗑️ Hapus Produk Ini
-          </button>
-
-          <button
-            onclick="closeModal()"
-            style="
-              background: #64748b;
-              color: white;
-              border: none;
-              padding: 10px;
-              border-radius: 8px;
-              cursor: pointer;
-            "
-          >
-            Batal
-          </button>
-        </div>
+        <h3>Update Produk</h3>
+        <input type="hidden" id="modal-index" />
+        <input
+          type="text"
+          id="modal-nama"
+          style="
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+          "
+        />
+        <input
+          type="number"
+          id="modal-harga"
+          style="
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+          "
+        />
+        <input
+          type="number"
+          id="modal-stok"
+          style="
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+          "
+        />
+        <button
+          onclick="simpanPerubahanModal()"
+          style="
+            background: #10b981;
+            width: 100%;
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+          "
+        >
+          Simpan
+        </button>
+        <button
+          onclick="closeModal()"
+          style="
+            background: transparent;
+            width: 100%;
+            border: 1px solid #64748b;
+            color: #64748b;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            cursor: pointer;
+          "
+        >
+          Batal
+        </button>
       </div>
     </div>
 
@@ -375,10 +285,10 @@
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(0, 0, 0, 0.85);
         justify-content: center;
         align-items: center;
-        z-index: 2000;
+        z-index: 999;
       "
     >
       <div
@@ -387,25 +297,36 @@
           background: #1e293b;
           padding: 25px;
           border-radius: 15px;
-          width: 400px;
+          width: 380px;
           color: white;
         "
       >
-        <h3>📄 Detail Pesanan</h3>
-        <div id="content-detail" style="margin: 20px 0; line-height: 1.8"></div>
+        <h3>📄 Informasi Detail</h3>
+        <div
+          id="content-detail"
+          style="
+            margin: 20px 0;
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            line-height: 1.6;
+          "
+        ></div>
         <button
           onclick="closeDetail()"
           style="
             width: 100%;
             background: #3b82f6;
-            color: white;
             border: none;
-            padding: 10px;
+            color: white;
+            padding: 12px;
             border-radius: 8px;
+            font-weight: bold;
             cursor: pointer;
           "
         >
-          Tutup Detail
+          Tutup
         </button>
       </div>
     </div>
