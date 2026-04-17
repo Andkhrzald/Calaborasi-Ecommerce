@@ -31,7 +31,7 @@ function renderOverview() {
     const sorted = [...produk].sort((a, b) => Number(a.stok) - Number(b.stok)).slice(0, 5);
     document.getElementById("tabel-populer").innerHTML = sorted.map(p => `
         <tr>
-            <td><img src="${p.gambar}" width="35" height="35" style="border-radius:6px; object-fit:cover;"></td>
+            <td><img src="../img/" width="35" height="35" style="border-radius:6px; object-fit:cover;"></td>
             <td>${p.nama}</td>
             <td>Rp ${Number(p.harga).toLocaleString()}</td>
             <td><b style="color:${Number(p.stok) < 5 ? '#ef4444' : '#10b981'}">${p.stok}</b></td>
@@ -51,10 +51,10 @@ function renderInventory() {
         let sTxt = isLow ? "Stok Menipis ⚠️" : "Aman ✅";
         let sCol = isLow ? "#f59e0b" : "#10b981";
         if(p.hidden) { sTxt = "Hidden 🚫"; sCol = "#94a3b8"; }
-
+        
         return `
         <tr style="opacity: ${p.hidden ? '0.5' : '1'}">
-            <td><img src="${p.gambar}" width="40" height="40" style="object-fit:cover; border-radius:8px;"></td>
+            <td><img src="../img/${p.gambar}" width="40" height="40" style="object-fit:cover; border-radius:8px;"></td>
             <td>${p.nama}</td>
             <td>Rp ${Number(p.harga).toLocaleString()}</td>
             <td><b>${curStok}</b></td>
