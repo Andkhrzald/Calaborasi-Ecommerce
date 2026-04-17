@@ -96,6 +96,7 @@
           </div>
         </div>
       </div>
+
       <div id="page-inventory" class="content-page" style="display: none">
         <div class="form">
           <h3>Tambah Produk Baru</h3>
@@ -126,6 +127,7 @@
           </table>
         </div>
       </div>
+
       <div id="page-orders" class="content-page" style="display: none">
         <div class="card-table">
           <h3>🔔 Antrean Pesanan Masuk</h3>
@@ -176,6 +178,7 @@
           </table>
         </div>
       </div>
+
       <div id="page-sales" class="content-page" style="display: none">
         <div class="card-table">
           <div
@@ -254,12 +257,157 @@
         </div>
       </div>
     </div>
-    <div id="modal-edit" class="modal">
-      <div class="modal-content"></div>
+    <div
+      id="modal-edit"
+      class="modal"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+      "
+    >
+      <div
+        class="modal-content"
+        style="
+          background: #1e293b;
+          padding: 25px;
+          border-radius: 15px;
+          width: 350px;
+          color: white;
+        "
+      >
+        <h3 style="margin-bottom: 15px">Update Produk</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <input
+            type="text"
+            id="modal-nama"
+            placeholder="Nama Produk"
+            style="
+              padding: 10px;
+              border-radius: 5px;
+              background: #0f172a;
+              border: 1px solid #334155;
+              color: white;
+            "
+          />
+          <input
+            type="number"
+            id="modal-harga"
+            placeholder="Harga"
+            style="
+              padding: 10px;
+              border-radius: 5px;
+              background: #0f172a;
+              border: 1px solid #334155;
+              color: white;
+            "
+          />
+          <input
+            type="number"
+            id="modal-stok"
+            placeholder="Stok"
+            style="
+              padding: 10px;
+              border-radius: 5px;
+              background: #0f172a;
+              border: 1px solid #334155;
+              color: white;
+            "
+          />
+          <input type="hidden" id="modal-index" />
+
+          <button
+            onclick="simpanPerubahanModal()"
+            style="
+              background: #10b981;
+              color: white;
+              border: none;
+              padding: 12px;
+              border-radius: 8px;
+              cursor: pointer;
+              font-weight: bold;
+              margin-top: 10px;
+            "
+          >
+            Simpan Perubahan
+          </button>
+
+          <button
+            onclick="hapusProdukDariModal()"
+            style="
+              background: transparent;
+              color: #ef4444;
+              border: 1px solid #ef4444;
+              padding: 10px;
+              border-radius: 8px;
+              cursor: pointer;
+              font-size: 0.85rem;
+            "
+          >
+            🗑️ Hapus Produk Ini
+          </button>
+
+          <button
+            onclick="closeModal()"
+            style="
+              background: #64748b;
+              color: white;
+              border: none;
+              padding: 10px;
+              border-radius: 8px;
+              cursor: pointer;
+            "
+          >
+            Batal
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div id="modal-detail" class="modal">
-      <div class="modal-content"></div>
+    <div
+      id="modal-detail"
+      class="modal"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+      "
+    >
+      <div
+        class="modal-content"
+        style="
+          background: #1e293b;
+          padding: 25px;
+          border-radius: 15px;
+          width: 400px;
+          color: white;
+        "
+      >
+        <h3>📄 Detail Pesanan</h3>
+        <div id="content-detail" style="margin: 20px 0; line-height: 1.8"></div>
+        <button
+          onclick="closeDetail()"
+          style="
+            width: 100%;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+          "
+        >
+          Tutup Detail
+        </button>
+      </div>
     </div>
 
     <script src="script.js"></script>
