@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
+<<<<<<< HEAD
 
 <head>
   <meta charset="UTF-8" />
@@ -234,3 +235,339 @@
 </body>
 
 </html>
+=======
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elvoo Executive Admin</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="sidebar">
+      <h2>ELVOO</h2>
+      <div class="user-profile">
+        <p id="user-display">Admin</p>
+        <small id="role-display">Executive Mode</small>
+      </div>
+      <nav>
+        <ul>
+          <li
+            onclick="changePage('overview')"
+            id="menu-overview"
+            class="menu-item active"
+          >
+            📊 Overview
+          </li>
+          <li
+            onclick="changePage('inventory')"
+            id="menu-inventory"
+            class="menu-item"
+          >
+            📦 Inventory
+          </li>
+          <li onclick="changePage('orders')" id="menu-orders" class="menu-item">
+            🔔 Pesanan Masuk
+          </li>
+          <li onclick="changePage('sales')" id="menu-sales" class="menu-item">
+            📈 Penghasilan
+          </li>
+        </ul>
+      </nav>
+      <button onclick="logout()" class="btn-logout">LOGOUT</button>
+    </div>
+
+    <div class="main">
+      <div id="page-overview" class="content-page">
+        <div class="dashboard-grid">
+          <div class="stats-card">
+            <small>Total Omset</small>
+            <h1 id="ov-total-omset">Rp 0</h1>
+          </div>
+          <div class="stats-card status-alert">
+            <small>Stok Menipis (< 5)</small>
+            <h2 id="ov-stok-low">0</h2>
+          </div>
+          <div class="stats-card status-info">
+            <small>Pesanan Antri</small>
+            <h2 id="ov-pending">0</h2>
+          </div>
+        </div>
+        <div class="card-table" style="margin: 20px 0">
+          <h4>📈 Tren Pendapatan</h4>
+          <div style="height: 250px">
+            <canvas id="salesChartOverview"></canvas>
+          </div>
+        </div>
+        <div class="card-table">
+          <h4>🔥 Produk Populer (Stok Terendah)</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Foto</th>
+                <th>Nama</th>
+                <th>Harga</th>
+                <th>Stok</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-populer"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="page-inventory" class="content-page" style="display: none">
+        <div class="form">
+          <h3>Tambah Produk</h3>
+          <div class="grid-in">
+            <input type="text" id="nama" placeholder="Nama Produk" />
+            <input type="number" id="harga" placeholder="Harga" />
+            <input type="number" id="stok" placeholder="Stok" />
+            <input type="text" id="gambar" placeholder="URL Gambar" />
+            <button class="btn-add" onclick="tambahProduk()">SIMPAN</button>
+          </div>
+        </div>
+        <div class="card-table" style="margin-top: 20px">
+          <table>
+            <thead>
+              <tr>
+                <th>Foto</th>
+                <th>Produk</th>
+                <th>Harga</th>
+                <th>Stok</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="page-orders" class="content-page" style="display: none">
+        <div class="card-table">
+          <h3>🔔 Antrean Pesanan</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Produk</th>
+                <th>Nominal</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-order-approval"></tbody>
+          </table>
+        </div>
+        <div
+          class="card-table"
+          style="margin-top: 25px; border-top: 3px solid #ef4444"
+        >
+          <h3 style="color: #ef4444">❌ Riwayat Pesanan Ditolak</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Produk</th>
+                <th>Alasan</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-order-reject"></tbody>
+          </table>
+        </div>
+        <div
+          class="card-table"
+          style="margin-top: 25px; border-top: 3px solid #10b981"
+        >
+          <h3 style="color: #10b981">✅ History Berhasil (Nota)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Produk</th>
+                <th>Nominal</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-order-history-approve"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="page-sales" class="content-page" style="display: none">
+        <div class="card-table">
+          <h4>📈 Laporan Penghasilan</h4>
+          <h1 id="sales-period-total" style="color: #3b82f6">Rp 0</h1>
+          <div style="height: 250px; margin: 20px 0">
+            <canvas id="detailedSalesChart"></canvas>
+          </div>
+          <h4>📋 Log Transaksi</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Produk</th>
+                <th>Nominal</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-history-30hari"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="modal-edit"
+      class="modal"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+      "
+    >
+      <div
+        class="modal-content"
+        style="
+          background: #1e293b;
+          padding: 25px;
+          border-radius: 15px;
+          width: 320px;
+          color: white;
+        "
+      >
+        <h3>Update Produk</h3>
+        <input type="hidden" id="modal-index" />
+        <input
+          type="text"
+          id="modal-nama"
+          style="
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+          "
+        />
+        <input
+          type="number"
+          id="modal-harga"
+          style="
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+          "
+        />
+        <input
+          type="number"
+          id="modal-stok"
+          style="
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+          "
+        />
+        <button
+          onclick="simpanPerubahanModal()"
+          style="
+            background: #10b981;
+            width: 100%;
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+          "
+        >
+          Simpan
+        </button>
+        <button
+          onclick="closeModal()"
+          style="
+            background: transparent;
+            width: 100%;
+            border: 1px solid #64748b;
+            color: #64748b;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            cursor: pointer;
+          "
+        >
+          Batal
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="modal-detail"
+      class="modal"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+      "
+    >
+      <div
+        class="modal-content"
+        style="
+          background: #1e293b;
+          padding: 25px;
+          border-radius: 15px;
+          width: 380px;
+          color: white;
+        "
+      >
+        <h3>📄 Informasi Detail</h3>
+        <div
+          id="content-detail"
+          style="
+            margin: 20px 0;
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            line-height: 1.6;
+          "
+        ></div>
+        <button
+          onclick="closeDetail()"
+          style="
+            width: 100%;
+            background: #3b82f6;
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+          "
+        >
+          Tutup
+        </button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+>>>>>>> 36536c688beb4bd187b2de7784b027990579de60

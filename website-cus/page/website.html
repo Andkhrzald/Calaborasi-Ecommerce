@@ -1,165 +1,212 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADMyself Store - E-commerce Minimalis</title>
+    <link rel="stylesheet" href="../assets/css/website.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ADMyself Store - E-commerce Minimalis</title>
-  <link rel="stylesheet" href="../assets/css/website.css">
-</head>
-
-<body>
-
-  <!-- NAVBAR -->
-  <div class="navbar">
-    <div class="logo">Caloborasi Store</div>
-    <div class="menu">
-      <a href="#">Home</a>
-      <a href="#">Men</a>
-      <a href="#">Women</a>
-      <a href="#">Sale</a>
-      <a href="#" class="nav-cart" onclick="toggleCartDrawer(event)">
-        🛒 <span class="nav-cart-badge" id="navCartBadge">0</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-content">
-      <h1>Big Sale 50% OFF 🔥</h1>
-      <p>Temukan fashion terbaik dengan harga terjangkau. Diskon hingga 50% untuk semua produk!</p>
-      <a href="#products" class="cta-button">Belanja Sekarang</a>
-      <a id="status-link" href="#" class="cta-button" style="display:none; margin-top: 1rem;">Lihat Status Pesanan</a>
-    </div>
-  </div>
-
-  <!-- MAIN CONTAINER -->
-  <div class="main-container">
-
-    <!-- LEFT SIDEBAR - FILTERS -->
-    <div class="left-sidebar">
-      <div class="sidebar-section">
-        <h3>Kategori</h3>
-        <div class="category-list">
-          <div class="category-item active" data-category="all">Semua Produk</div>
-          <div class="category-item" data-category="clothes_men">Pakaian Pria</div>
-          <div class="category-item" data-category="clothes_women">Pakaian Wanita</div>
-          <div class="category-item" data-category="shoes">Sepatu</div>
-          <div class="category-item" data-category="bags">Tas & Dompet</div>
-          <div class="category-item" data-category="accessories">Aksesoris</div>
-          <div class="category-item" data-category="beauty">Kecantikan & Perawatan</div>
-          <div class="category-item" data-category="electronic">Elektronik & Gadget</div>
-          <div class="category-item" data-category="home">Perabotan Rumah</div>
-          <div class="category-item" data-category="sale">Flash Sale</div>
-        </div>
+  <body>
+    <!-- NAVBAR -->
+    <div class="navbar">
+      <div class="logo">preloved Store</div>
+      <div class="menu">
+        <a href="#">Home</a>
+        <a href="#">Men</a>
+        <a href="#">Women</a>
+        <a href="#">Sale</a>
+        <a href="#" class="nav-cart" onclick="toggleCartDrawer(event)">
+          🛒 <span class="nav-cart-badge" id="navCartBadge">0</span>
+        </a>
       </div>
     </div>
 
-    <!-- MIDDLE - PRODUCTS -->
-    <div class="middle-section">
-      <!-- SEARCH BAR -->
-      <div class="search-top">
-        <input type="text" id="search" placeholder="🔍 Cari produk fashion..." onkeyup="searchProduct()">
-        <div class="search-filters">
-          <button class="filter-btn active" data-sort="terbaru">Terbaru</button>
-          <button class="filter-btn" data-sort="terlaris">Terlaris</button>
-          <button class="filter-btn" data-sort="harga-terendah">Harga Terendah</button>
-          <button class="filter-btn" data-sort="diskon">Diskon</button>
-        </div>
-      </div>
-
-      <!-- PRODUCTS GRID -->
-      <section id="products">
-        <div class="products-grid" id="product-list">
-          <!-- Products will load here -->
-        </div>
-      </section>
-    </div>
-
-    <!-- MOBILE FLOATING CART BUTTON REMOVED -->
-
-    <!-- MOBILE CART DRAWER MODAL -->
-    <div class="cart-drawer-overlay" id="cartDrawerOverlay" onclick="closeCartDrawer()"></div>
-    <div class="cart-drawer" id="cartDrawer">
-      <div class="cart-drawer-header">
-        <h3>Keranjang Belanja</h3>
-        <button class="close-drawer-btn" onclick="closeCartDrawer()">✕</button>
-      </div>
-      <div class="cart-drawer-items" id="cartDrawerItems">
-        <div class="empty-cart">
-          <p>Keranjang kosong</p>
-        </div>
-      </div>
-      <div class="cart-drawer-footer">
-        <div class="summary-row total">
-          <span>Total:</span>
-          <strong>Rp <span id="totalDrawer">0</span></strong>
-        </div>
-        <p class="cart-footnote">Biaya pengiriman akan dihitung saat checkout berdasarkan alamat Anda dan pilihan kurir.
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-content">
+        <h1>Big Sale 50% OFF 🔥</h1>
+        <p>
+          Temukan fashion terbaik dengan harga terjangkau. Diskon hingga 50%
+          untuk semua produk!
         </p>
-        <button class="checkout-btn" onclick="checkout()">🚀 Checkout</button>
+        <a href="#products" class="cta-button">Belanja Sekarang</a>
+        <a
+          id="status-link"
+          href="#"
+          class="cta-button"
+          style="display: none; margin-top: 1rem"
+          >Lihat Status Pesanan</a
+        >
       </div>
     </div>
 
-  </div>
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+      <!-- LEFT SIDEBAR - FILTERS -->
+      <div class="left-sidebar">
+        <div class="sidebar-section">
+          <h3>Kategori</h3>
+          <div class="category-list">
+            <div class="category-item active" data-category="all">
+              Semua Produk
+            </div>
+            <div class="category-item" data-category="clothes_men">
+              Pakaian Pria
+            </div>
+            <div class="category-item" data-category="clothes_women">
+              Pakaian Wanita
+            </div>
+            <div class="category-item" data-category="shoes">Sepatu</div>
+            <div class="category-item" data-category="bags">Tas & Dompet</div>
+            <div class="category-item" data-category="accessories">
+              Aksesoris
+            </div>
+            <div class="category-item" data-category="beauty">
+              Kecantikan & Perawatan
+            </div>
+            <div class="category-item" data-category="electronic">
+              Elektronik & Gadget
+            </div>
+            <div class="category-item" data-category="home">
+              Perabotan Rumah
+            </div>
+            <div class="category-item" data-category="sale">Flash Sale</div>
+          </div>
+        </div>
+      </div>
 
-  <!-- ALERT MODAL POPUP -->
-  <div class="alert-modal-overlay" id="alertModalOverlay"></div>
-  <div class="alert-modal" id="alertModal">
-    <div class="alert-modal-content">
-      <div class="alert-modal-icon" id="alertIcon">⚠️</div>
-      <h2 id="alertTitle" class="alert-modal-title">Keranjang Kosong!</h2>
-      <p id="alertMessage" class="alert-modal-message">Silakan tambahkan produk ke keranjang sebelum checkout.</p>
-      <div class="alert-modal-actions">
-        <button class="alert-modal-btn btn-primary" onclick="closeAlertModal()">Lanjut Belanja</button>
-      </div>
-    </div>
-  </div>
+      <!-- MIDDLE - PRODUCTS -->
+      <div class="middle-section">
+        <!-- SEARCH BAR -->
+        <div class="search-top">
+          <input
+            type="text"
+            id="search"
+            placeholder="🔍 Cari produk fashion..."
+            onkeyup="searchProduct()"
+          />
+          <div class="search-filters">
+            <button class="filter-btn active" data-sort="terbaru">
+              Terbaru
+            </button>
+            <button class="filter-btn" data-sort="terlaris">Terlaris</button>
+            <button class="filter-btn" data-sort="harga-terendah">
+              Harga Terendah
+            </button>
+            <button class="filter-btn" data-sort="diskon">Diskon</button>
+          </div>
+        </div>
 
-  <!-- FOOTER -->
-  <div class="footer">
-    <div class="footer-content">
-      <div class="footer-section">
-        <h4>Caloborasi Store</h4>
-        <p>Toko fashion online terpercaya dengan koleksi produk berkualitas tinggi dan harga terjangkau.</p>
+        <!-- PRODUCTS GRID -->
+        <section id="products">
+          <div class="products-grid" id="product-list">
+            <!-- Products will load here -->
+          </div>
+        </section>
       </div>
-      <div class="footer-section">
-        <h4>Kategori</h4>
-        <ul class="footer-links">
-          <li><a href="#">Pakaian Pria</a></li>
-          <li><a href="#">Pakaian Wanita</a></li>
-          <li><a href="#">Sepatu</a></li>
-          <li><a href="#">Aksesoris</a></li>
-        </ul>
-      </div>
-      <div class="footer-section">
-        <h4>Bantuan</h4>
-        <ul class="footer-links">
-          <li><a href="#">Cara Belanja</a></li>
-          <li><a href="#">Pengiriman</a></li>
-          <li><a href="#">Pengembalian</a></li>
-          <li><a href="#">Kontak Kami</a></li>
-        </ul>
-      </div>
-      <div class="footer-section">
-        <h4>Ikuti Kami</h4>
-        <p>Tetap terhubung dengan update terbaru dan promo menarik.</p>
-        <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-          <span style="font-size: 1.5rem;">📘</span>
-          <span style="font-size: 1.5rem;">📷</span>
-          <span style="font-size: 1.5rem;">🐦</span>
-          <span style="font-size: 1.5rem;">📺</span>
+
+      <!-- MOBILE FLOATING CART BUTTON REMOVED -->
+
+      <!-- MOBILE CART DRAWER MODAL -->
+      <div
+        class="cart-drawer-overlay"
+        id="cartDrawerOverlay"
+        onclick="closeCartDrawer()"
+      ></div>
+      <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-drawer-header">
+          <h3>Keranjang Belanja</h3>
+          <button class="close-drawer-btn" onclick="closeCartDrawer()">
+            ✕
+          </button>
+        </div>
+        <div class="cart-drawer-items" id="cartDrawerItems">
+          <div class="empty-cart">
+            <p>Keranjang kosong</p>
+          </div>
+        </div>
+        <div class="cart-drawer-footer">
+          <div class="summary-row total">
+            <span>Total:</span>
+            <strong>Rp <span id="totalDrawer">0</span></strong>
+          </div>
+          <p class="cart-footnote">
+            Biaya pengiriman akan dihitung saat checkout berdasarkan alamat Anda
+            dan pilihan kurir.
+          </p>
+          <button class="checkout-btn" onclick="checkout()">🚀 Checkout</button>
         </div>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 ADMyself Store. All rights reserved. Made with by Andikha Rizaldi</p>
+
+    <!-- ALERT MODAL POPUP -->
+    <div class="alert-modal-overlay" id="alertModalOverlay"></div>
+    <div class="alert-modal" id="alertModal">
+      <div class="alert-modal-content">
+        <div class="alert-modal-icon" id="alertIcon">⚠️</div>
+        <h2 id="alertTitle" class="alert-modal-title">Keranjang Kosong!</h2>
+        <p id="alertMessage" class="alert-modal-message">
+          Silakan tambahkan produk ke keranjang sebelum checkout.
+        </p>
+        <div class="alert-modal-actions">
+          <button
+            class="alert-modal-btn btn-primary"
+            onclick="closeAlertModal()"
+          >
+            Lanjut Belanja
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <script src="../assets/js/website.js"></script>
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Caloborasi Store</h4>
+          <p>
+            Toko fashion online terpercaya dengan koleksi produk berkualitas
+            tinggi dan harga terjangkau.
+          </p>
+        </div>
+        <div class="footer-section">
+          <h4>Kategori</h4>
+          <ul class="footer-links">
+            <li><a href="#">Pakaian Pria</a></li>
+            <li><a href="#">Pakaian Wanita</a></li>
+            <li><a href="#">Sepatu</a></li>
+            <li><a href="#">Aksesoris</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Bantuan</h4>
+          <ul class="footer-links">
+            <li><a href="#">Cara Belanja</a></li>
+            <li><a href="#">Pengiriman</a></li>
+            <li><a href="#">Pengembalian</a></li>
+            <li><a href="#">Kontak Kami</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Ikuti Kami</h4>
+          <p>Tetap terhubung dengan update terbaru dan promo menarik.</p>
+          <div style="display: flex; gap: 1rem; margin-top: 1rem">
+            <span style="font-size: 1.5rem">📘</span>
+            <span style="font-size: 1.5rem">📷</span>
+            <span style="font-size: 1.5rem">🐦</span>
+            <span style="font-size: 1.5rem">📺</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>
+          &copy; 2026 ADMyself Store. All rights reserved. Made with by Andikha
+          Rizaldi
+        </p>
+      </div>
+    </div>
 
-</body>
-
+    <script src="../assets/js/website.js"></script>
+  </body>
 </html>
