@@ -5,9 +5,17 @@
   box-sizing: border-box;
 }
 
+:root {
+  --primary: #111111;
+  --accent: #2563eb;
+  --soft-gray: #f5f5f5;
+  --border: #e5e5e5;
+  --text-muted: #6b7280;
+}
+
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: #ffffff;
+  background-color: #f9fafb;
   color: #333333;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -15,7 +23,7 @@ body {
 
 /* ========== HEADER ========== */
 .checkout-site-header {
-  border-bottom: 1px solid #e1e1e1;
+  border-bottom: 1px solid #f0f0f0;
   padding: 1.5rem 0;
   background: white;
 }
@@ -27,6 +35,11 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.logo {
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .checkout-header-container .logo {
@@ -55,9 +68,10 @@ body {
 
 .checkout-layout-inner {
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 1000px;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 3rem;
+  max-width: 1100px;
+  margin: auto;
 }
 
 @media (min-width: 900px) {
@@ -106,6 +120,13 @@ body {
   font-weight: 500;
 }
 
+.form-section {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 16px;
+  border: 1px solid #eee;
+}
+
 .form-section h2 {
   font-size: 1.25rem;
   font-weight: 600;
@@ -144,8 +165,9 @@ form {
   width: 100%;
 }
 
-.form-group input,
-.form-group textarea {
+.form-group input:hover,
+.form-group textarea:hover {
+  border-color: #c7c7c7;
   width: 100%;
   padding: 1.2rem 0.8rem 0.4rem;
   font-size: 0.95rem;
@@ -216,23 +238,21 @@ form {
   font-size: 0.9rem;
   font-weight: 500;
   transition: color 0.2s;
+  opacity: 0.7;
 }
 
 .return-link:hover {
   color: #1d4ed8;
+  opacity: 1;
 }
 
 .place-order-btn {
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 1.2rem 2rem;
-  font-size: 1rem;
+  background: #111;
+  border-radius: 999px;
+  padding: 1rem 2.2rem;
   font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s;
-  width: 100%;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
 }
 
 @media (min-width: 600px) {
@@ -242,13 +262,15 @@ form {
 }
 
 .place-order-btn:hover {
-  background: #1d4ed8;
+  background: #000;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* RIGHT SIDEBAR COLUMN */
 .checkout-sidebar {
   flex: 0 0 45%;
-  background: #fafafa;
+  background: white;
   padding: 2rem 5%;
   border-top: 1px solid #e1e1e1;
 }
@@ -263,6 +285,13 @@ form {
     position: sticky;
     top: 3rem;
   }
+}
+
+.summary-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+  padding: 1.5rem;
 }
 
 .summary-card h2 {
@@ -280,6 +309,11 @@ form {
   }
 }
 
+#checkout-total {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
 .order-items-list {
   display: flex;
   flex-direction: column;
@@ -289,9 +323,13 @@ form {
 
 /* Inline JS injected item stylings */
 .checkout-item {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
+  padding: 0.8rem;
+  border-radius: 10px;
+  transition: 0.2s;
+}
+
+.checkout-item:hover {
+  background: #f9fafb;
 }
 
 .item-img-wrapper {
@@ -368,11 +406,14 @@ form {
 
 .total-row {
   display: flex;
+  background: #fafafa;
   justify-content: space-between;
   align-items: center;
   margin-top: 0.8rem;
   padding-top: 1.2rem;
   border-top: 1px solid #e1e1e1;
+  border-radius: 10px;
+  padding: 1rem;
 }
 
 .total-row>span {
