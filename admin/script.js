@@ -69,7 +69,7 @@ function renderOverview() {
         const sTxt = isLow ? "Menipis ⚠️" : "Aman ✅";
         const sCol = isLow ? "#f59e0b" : "#10b981";
         return `<tr>
-            <td><img src="${p.gambar}" width="35" height="35" style="border-radius:6px; object-fit:cover;"></td>
+            <td><img src="img/${p.gambar}" width="35" height="35" style="border-radius:6px; object-fit:cover;"></td>
             <td>${p.nama}</td>
             <td>Rp ${Number(p.harga).toLocaleString()}</td>
             <td><b>${p.stok}</b></td>
