@@ -7,34 +7,35 @@
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-      /* CSS FIX: List Menurun & Gambar Rapi */
+      /* CSS Tambahan untuk List Produk Menurun */
       table td {
         vertical-align: top;
         padding: 12px 8px;
       }
-
       .product-item-list {
         margin-bottom: 5px;
-        padding: 5px 10px;
-        border-left: 3px solid #3b82f6;
-        background: rgba(59, 130, 246, 0.1);
+        padding: 4px 8px;
+        border-bottom: 1px dashed #334155;
         font-size: 13px;
         color: #e2e8f0;
-        border-radius: 0 4px 4px 0;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 4px;
+      }
+      .product-item-list:last-child {
+        border-bottom: none;
       }
 
+      /* CSS untuk memastikan gambar muncul */
       .img-container {
-        width: 45px;
-        height: 45px;
-        background: #1e293b;
+        width: 40px;
+        height: 40px;
+        background: #334155;
         border-radius: 8px;
         overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 1px solid #334155;
       }
-
       .img-container img {
         width: 100%;
         height: 100%;
@@ -45,6 +46,10 @@
   <body>
     <div class="sidebar">
       <h2>ELVOO</h2>
+      <div class="user-profile">
+        <p id="user-display">Admin</p>
+        <small id="role-display">Executive Mode</small>
+      </div>
       <nav>
         <ul>
           <li
@@ -62,10 +67,10 @@
             📦 Inventory
           </li>
           <li onclick="changePage('orders')" id="menu-orders" class="menu-item">
-            🔔 Pesanan
+            🔔 Pesanan Masuk
           </li>
           <li onclick="changePage('sales')" id="menu-sales" class="menu-item">
-            📈 Sales
+            📈 Penghasilan
           </li>
         </ul>
       </nav>
@@ -80,21 +85,28 @@
             <h1 id="ov-total-omset">Rp 0</h1>
           </div>
           <div class="stats-card status-alert">
-            <small>Stok Menipis</small>
+            <small>Stok Menipis (< 5)</small>
             <h2 id="ov-stok-low">0</h2>
           </div>
           <div class="stats-card status-info">
-            <small>Antrean</small>
+            <small>Pesanan Antri</small>
             <h2 id="ov-pending">0</h2>
           </div>
         </div>
-        <div class="card-table" style="margin-top: 20px">
-          <h4>🔥 Monitoring Stok Terendah</h4>
+        <div class="card-table" style="margin: 20px 0">
+          <h4>📈 Tren Pendapatan</h4>
+          <div style="height: 250px">
+            <canvas id="salesChartOverview"></canvas>
+          </div>
+        </div>
+        <div class="card-table">
+          <h4>🔥 Produk Populer (Stok Terendah)</h4>
           <table>
             <thead>
               <tr>
                 <th>Foto</th>
                 <th>Nama</th>
+                <th>Harga</th>
                 <th>Stok</th>
                 <th>Status</th>
               </tr>
@@ -106,7 +118,7 @@
 
       <div id="page-inventory" class="content-page" style="display: none">
         <div class="form">
-          <h3>📦 Kelola Produk</h3>
+          <h3>Tambah Produk</h3>
           <div class="grid-in">
             <input type="text" id="nama" placeholder="Nama Produk" />
             <input type="number" id="harga" placeholder="Harga" />
@@ -114,7 +126,7 @@
             <input
               type="text"
               id="gambar"
-              placeholder="Nama File (Contoh: baju.jpg)"
+              placeholder="URL Gambar (Direct Link)"
             />
             <button class="btn-add" onclick="tambahProduk()">SIMPAN</button>
           </div>
@@ -143,8 +155,8 @@
             <thead>
               <tr>
                 <th>Waktu</th>
-                <th>Daftar Produk</th>
-                <th>Total</th>
+                <th>Produk</th>
+                <th>Nominal</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -153,19 +165,57 @@
         </div>
         <div
           class="card-table"
-          style="margin-top: 25px; border-top: 3px solid #10b981"
+          style="margin-top: 25px; border-top: 3px solid #ef4444"
         >
-          <h3>✅ Riwayat Berhasil</h3>
+          <h3 style="color: #ef4444">❌ Pesanan Ditolak</h3>
           <table>
             <thead>
               <tr>
                 <th>Waktu</th>
-                <th>Daftar Produk</th>
-                <th>Total</th>
+                <th>Produk</th>
+                <th>Alasan</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-order-reject"></tbody>
+          </table>
+        </div>
+        <div
+          class="card-table"
+          style="margin-top: 25px; border-top: 3px solid #10b981"
+        >
+          <h3 style="color: #10b981">✅ Riwayat Berhasil</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>Produk</th>
+                <th>Nominal</th>
                 <th>Aksi</th>
               </tr>
             </thead>
             <tbody id="tabel-order-history-approve"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="page-sales" class="content-page" style="display: none">
+        <div class="card-table">
+          <h4>📈 Laporan Penghasilan</h4>
+          <h1 id="sales-period-total" style="color: #3b82f6">Rp 0</h1>
+          <div style="height: 250px; margin: 20px 0">
+            <canvas id="detailedSalesChart"></canvas>
+          </div>
+          <h4>📋 Log Transaksi</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Produk</th>
+                <th>Nominal</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-history-30hari"></tbody>
           </table>
         </div>
       </div>
@@ -178,18 +228,20 @@
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(0, 0, 0, 0.85);
         justify-content: center;
         align-items: center;
-        z-index: 99;
+        z-index: 999;
       "
     >
       <div
+        class="modal-content"
         style="
           background: #1e293b;
           padding: 25px;
           border-radius: 15px;
-          width: 300px;
+          width: 320px;
+          color: white;
         "
       >
         <h3>Update Produk</h3>
@@ -204,6 +256,7 @@
             background: #0f172a;
             color: white;
             border: 1px solid #334155;
+            border-radius: 5px;
           "
         />
         <input
@@ -216,6 +269,7 @@
             background: #0f172a;
             color: white;
             border: 1px solid #334155;
+            border-radius: 5px;
           "
         />
         <input
@@ -228,18 +282,20 @@
             background: #0f172a;
             color: white;
             border: 1px solid #334155;
+            border-radius: 5px;
           "
         />
         <button
           onclick="simpanPerubahanModal()"
           style="
-            width: 100%;
             background: #10b981;
-            color: white;
+            width: 100%;
             border: none;
-            padding: 10px;
-            border-radius: 5px;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
             cursor: pointer;
+            font-weight: bold;
           "
         >
           Simpan
@@ -247,15 +303,71 @@
         <button
           onclick="closeModal()"
           style="
+            background: transparent;
             width: 100%;
-            background: none;
-            color: #94a3b8;
-            border: none;
+            border: 1px solid #64748b;
+            color: #64748b;
+            padding: 10px;
+            border-radius: 8px;
             margin-top: 10px;
             cursor: pointer;
           "
         >
           Batal
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="modal-detail"
+      class="modal"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+      "
+    >
+      <div
+        class="modal-content"
+        style="
+          background: #1e293b;
+          padding: 25px;
+          border-radius: 15px;
+          width: 380px;
+          color: white;
+        "
+      >
+        <h3>📄 Detail Pesanan</h3>
+        <div
+          id="content-detail"
+          style="
+            margin: 20px 0;
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            max-height: 300px;
+            overflow-y: auto;
+          "
+        ></div>
+        <button
+          onclick="closeDetail()"
+          style="
+            width: 100%;
+            background: #3b82f6;
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+          "
+        >
+          Tutup
         </button>
       </div>
     </div>
