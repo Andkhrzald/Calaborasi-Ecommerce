@@ -15,7 +15,7 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: #f9fafb;
+  background: #f5f5f5;
   color: #333333;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -82,6 +82,7 @@ body {
 
 /* LEFT MAIN COLUMN */
 .checkout-main {
+  padding: 0;
   flex: 1;
   padding: 2rem 5% 4rem;
   background: #ffffff;
@@ -144,7 +145,6 @@ form {
 .form-row {
   display: flex;
   gap: 1rem;
-  flex-direction: column;
 }
 
 @media (min-width: 600px) {
@@ -155,7 +155,21 @@ form {
 
 .form-group {
   position: relative;
+   margin-bottom: 1.2rem;
 }
+
+.form-group label {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  background: white;
+  padding: 0 0.3rem;
+  font-size: 0.85rem;
+  color: #777;
+  transition: 0.2s;
+}
+
 
 .form-group.half {
   flex: 1;
@@ -202,12 +216,13 @@ form {
 }
 
 /* Floating logic: When input has focus or has text (placeholder not shown) */
-.form-group input:focus+label,
-.form-group input:not(:placeholder-shown)+label,
-.form-group textarea:focus+label,
-.form-group textarea:not(:placeholder-shown)+label {
-  transform: translateY(-0.6rem) scale(0.8);
-  color: #737373;
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label,
+.form-group textarea:focus + label,
+.form-group textarea:not(:placeholder-shown) + label {
+  top: 0;
+  transform: translateY(-50%) scale(0.85);
+  color: #2563eb;
 }
 
 .form-group input:focus+label,
@@ -247,12 +262,18 @@ form {
 }
 
 .place-order-btn {
-  background: #111;
+  background: rgb(250, 249, 249);
   border-radius: 999px;
-  padding: 1rem 2.2rem;
+  padding: 1rem 2rem;
   font-weight: 600;
-  letter-spacing: 0.3px;
-  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 1rem;
+  transition: 0.3s;
+}    
+
+.place-order-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
 @media (min-width: 600px) {
@@ -262,7 +283,7 @@ form {
 }
 
 .place-order-btn:hover {
-  background: #000;
+  background: #737373;
   transform: translateY(-1px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 }
@@ -289,9 +310,9 @@ form {
 
 .summary-card {
   background: white;
-  border-radius: 12px;
-  border: 1px solid #e5e5e5;
-  padding: 1.5rem;
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid #eee;
 }
 
 .summary-card h2 {
@@ -412,7 +433,7 @@ form {
   margin-top: 0.8rem;
   padding-top: 1.2rem;
   border-top: 1px solid #e1e1e1;
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 1rem;
 }
 
